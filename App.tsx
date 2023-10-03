@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useFonts } from 'expo-font';
+import { TamaguiProvider, YStack, Text } from 'tamagui';
+import { StatusBar } from 'react-native';
+
+import config from './tamagui.config';
+import { Pomodoro } from './src/screens/Pomodoro';
 
 export default function App() {
+  const [isFontloading] = useFonts({
+    regular: require('@tamagui/font-inter/otf/Inter-Refular.otf'),
+    medium: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
+    semibold: require('@tamagui/font-inter/otf/Inter-Semibold.otf'),
+    bold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
+  });
+
+  if (!isFontloading) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Hell, world!!</Text>
-      <StatusBar style='auto' />
-    </View>
+    <TamaguiProvider config={config}>
+      <StatusBar
+        barStyle='light-content'
+        backgroundColor='transparent'
+        translucent
+      />
+      <YStack f={1} bg="$blue1">
+        <Pomodoro />
+      </YStack>
+    </TamaguiProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
