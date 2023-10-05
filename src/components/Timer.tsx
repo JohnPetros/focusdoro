@@ -14,6 +14,7 @@ import { ReText } from 'react-native-redash'
 import { Square, Text, YStack, useTheme } from 'tamagui'
 import { XStack } from 'tamagui'
 import { Pause } from 'phosphor-react-native'
+import { useTimerStore } from '../hooks/useTimerStore'
 
 const { width, height } = Dimensions.get('window')
 
@@ -25,7 +26,7 @@ const RADIUS = calculateRadius(CIRCLE_LENGTH)
 const OUTER_CIRCLE_RADIUS = calculateRadius(OUTER_CIRCLE_LENGTH)
 const INNER_CIRCLE_RADIUS = calculateRadius(INNER_CIRCLE_LENGTH)
 
-const SESSION_TOTAL_SECONDS = 900
+const sessionSeconds = 900
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
@@ -36,8 +37,12 @@ interface TimerProps {
   isPaused: boolean
 }
 
-export function Timer({ isPaused }: TimerProps) {
-  const [totalSeconds, setTotalSeconds] = useState(SESSION_TOTAL_SECONDS)
+export function Timer() {
+  const {
+    state: { isPaused, sessionSeconds, totalSessions, completedSessions },
+  } = useTimerStore()
+
+  const [totalSeconds, setTotalSeconds] = useState(sessionSeconds)
   const progress = useSharedValue(1)
   const minutes = useSharedValue(totalSeconds / 60)
   const seconds = useSharedValue(totalSeconds % 60)
@@ -84,7 +89,7 @@ export function Timer({ isPaused }: TimerProps) {
 
       setTotalSeconds(totalSeconds - 1)
 
-      progress.value = withTiming(totalSeconds / SESSION_TOTAL_SECONDS)
+      progress.value = withTiming(totalSeconds / sessionSeconds)
     }, 1000)
   }, [totalSeconds, isPaused])
 
@@ -111,7 +116,7 @@ export function Timer({ isPaused }: TimerProps) {
           zIndex={50}
           animatedProps={opacityAnimatedProp}
         >
-          1 of 3 sessions
+          {completedSessions} of {totalSessions} sessions
         </AnimatedText>
         {isPaused && (
           <Square
