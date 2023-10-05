@@ -27,7 +27,8 @@
     "react-native-redash": "^18.1.0",
     "react-native-shadow-2": "^7.0.8",
     "react-native-svg": "^13.14.0",
-    "tamagui": "^1.74.8"
+    "tamagui": "^1.74.8",
+    "zustand": "^4.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
