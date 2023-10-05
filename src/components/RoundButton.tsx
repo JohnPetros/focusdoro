@@ -1,13 +1,15 @@
 import { Button, useTheme, ButtonProps } from 'tamagui'
 import { Shadow } from 'react-native-shadow-2'
 
-interface RoundButtonProps extends ButtonProps {}
+interface RoundButtonProps extends ButtonProps {
+  shadowColor: string;
+}
 
-export function RoundButton({ color, ...rest }: RoundButtonProps) {
+export function RoundButton({ color, shadowColor, ...rest }: RoundButtonProps) {
   const theme = useTheme()
 
   return (
-    <Shadow startColor={theme.blue8.val} style={{ borderRadius: 40 }}>
+    <Shadow startColor={shadowColor} style={{ borderRadius: 40 }}>
       <Button
         {...rest}
         circular
