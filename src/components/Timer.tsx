@@ -102,6 +102,8 @@ export function Timer() {
   }, [])
 
   useEffect(() => {
+    if (isPaused) return
+
     const isSessionEnd = sessionSeconds === -1
 
     if (isSessionEnd && isLongBreak) {
@@ -144,8 +146,6 @@ export function Timer() {
       return
     }
 
-    if (isPaused) return
-
     setTimeout(() => {
       minutes.value = Math.floor(sessionSeconds / 60)
       seconds.value = sessionSeconds % 60
@@ -179,7 +179,7 @@ export function Timer() {
           zIndex={50}
           animatedProps={opacityAnimatedProp}
         >
-          {isBreak
+          {isBreak || isLongBreak
             ? `${
                 isLongBreak ? 'Long break' : 'break'
               } for ${convertSecondsToTime(breakSeconds)}`
