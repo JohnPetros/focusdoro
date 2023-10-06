@@ -16,7 +16,7 @@ export function Pomodoro() {
   // const [isPaused, setIsPaused] = useState(false)
   const {
     state: { isPaused, totalSessions, completedSessions, totalSessionSeconds },
-    action: { setIsPaused, setSessionSeconds },
+    action: { setIsPaused, setSessionSeconds, setCompletedSessions },
   } = useTimerStore()
 
   const theme = useTheme()
@@ -28,6 +28,12 @@ export function Pomodoro() {
   function handleResetSessionButton() {
     setIsPaused(false)
     setSessionSeconds(totalSessionSeconds)
+  }
+
+  function handleResetPomodoroButton() {
+    setIsPaused(false)
+    setSessionSeconds(totalSessionSeconds)
+    setCompletedSessions(1)
   }
 
   return (
@@ -73,7 +79,7 @@ export function Pomodoro() {
                 size="$5"
                 icon={<Reset color={theme.blue12.val} size={24} />}
                 bc="$blue10"
-                onPress={handlePlayButton}
+                onPress={handleResetPomodoroButton}
               />
             </XStack>
           )}
