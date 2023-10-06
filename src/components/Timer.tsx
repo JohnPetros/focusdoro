@@ -13,7 +13,9 @@ import { Svg, Circle } from 'react-native-svg'
 import { ReText } from 'react-native-redash'
 import { Square, Text, YStack, useTheme } from 'tamagui'
 import { XStack } from 'tamagui'
-import { Pause } from 'phosphor-react-native'
+import { useToastController } from '@tamagui/toast'
+
+import { HourglassHigh, Pause } from 'phosphor-react-native'
 import { useTimerStore } from '../hooks/useTimerStore'
 
 const { width, height } = Dimensions.get('window')
@@ -31,20 +33,17 @@ const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 const AnimatedText = Animated.createAnimatedComponent(Text)
 const AnimatedSquare = Animated.createAnimatedComponent(Square)
 
-interface TimerProps {
-  isPaused: boolean
-}
-
 export function Timer() {
   const {
     state: {
       isPaused,
       sessionSeconds,
+      breakSeconds,
       totalSessionSeconds,
       totalSessions,
       completedSessions,
     },
-    action: { setSessionSeconds },
+    action: { setSessionSeconds, setIsBreak, setBreakSeconds },
   } = useTimerStore()
 
   // const [totalSeconds, setTotalSeconds] = useState(SESSION_SECONDS)
@@ -52,6 +51,7 @@ export function Timer() {
   const minutes = useSharedValue(sessionSeconds / 60)
   const seconds = useSharedValue(sessionSeconds % 60)
   const theme = useTheme()
+  const toast = useToastController()
 
   const innerCircleAnimatedProps = useAnimatedProps(() => ({
     strokeDashoffset: INNER_CIRCLE_LENGTH * (1 - progress.value),
@@ -86,13 +86,20 @@ export function Timer() {
   }, [])
 
   useEffect(() => {
-    if (sessionSeconds === 0 || isPaused) return
+    if (sessionSeconds === 0) {
+      setIsBreak(true)
+      setSessionSeconds(breakSeconds)
+      toast.show(`Take a break for ${breakSeconds / 60} minutes`, {
+        icon: HourglassHigh,
+      })
+      return
+    }
+
+    if (isPaused) return
 
     setTimeout(() => {
       minutes.value = Math.floor(sessionSeconds / 60)
       seconds.value = sessionSeconds % 60
-
-      console.log(sessionSeconds)
 
       setSessionSeconds(sessionSeconds - 1)
 
