@@ -7,12 +7,14 @@ import {
   Pause,
   ClockCounterClockwise,
   Square as Reset,
+  Gear,
+  House,
 } from 'phosphor-react-native'
 
 import { Timer } from '../components/Timer'
 import { SESSION_SECONDS, useTimerStore } from '../hooks/useTimerStore'
 
-export function Pomodoro() {
+export default function Pomodoro() {
   const {
     state: {
       isPaused,
@@ -32,6 +34,10 @@ export function Pomodoro() {
   } = useTimerStore()
 
   const theme = useTheme()
+
+  function handleSettingsButton() {}
+
+  function handleHomeButton() {}
 
   function handlePlayButton() {
     setIsPaused(!isPaused)
@@ -59,7 +65,24 @@ export function Pomodoro() {
           totalSessions={totalSessions}
           completedSessions={completedSessions}
         />
+        <XStack>
+          <RoundButton
+            shadowColor={theme.blue12.val}
+            size="$5"
+            icon={<Gear color={theme.blue12.val} size={24} />}
+            bc="$blue2"
+            onPress={handleResetSessionButton}
+          />
+          <RoundButton
+            shadowColor={theme.blue12.val}
+            size="$5"
+            icon={<House color={theme.blue12.val} size={24} />}
+            bc="$blue2"
+            onPress={handleResetSessionButton}
+          />
+        </XStack>
       </Square>
+
       <YStack f={1} ai="center" jc="center" position="relative">
         <Timer />
 
