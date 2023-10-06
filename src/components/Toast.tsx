@@ -1,7 +1,7 @@
 import { Toast as T, useToastState } from '@tamagui/toast'
 import { Square, XStack, useTheme } from 'tamagui'
 
-const WIDTH = 260
+const WIDTH = 280
 const X_PADDING = 8
 const Y_PADDING = 12
 
@@ -12,7 +12,6 @@ export function Toast() {
   const Icon = toast?.icon
 
   if (!toast || toast.isHandledNatively) return null
-  console.log(toast?.isHandledNatively)
 
   return (
     <T
