@@ -15,8 +15,8 @@ import { useTimerStore } from '../hooks/useTimerStore'
 export function Pomodoro() {
   // const [isPaused, setIsPaused] = useState(false)
   const {
-    state: { isPaused, totalSessions, completedSessions },
-    action: { setIsPaused },
+    state: { isPaused, totalSessions, completedSessions, totalSessionSeconds },
+    action: { setIsPaused, setSessionSeconds },
   } = useTimerStore()
 
   const theme = useTheme()
@@ -25,7 +25,10 @@ export function Pomodoro() {
     setIsPaused(!isPaused)
   }
 
-  function handleResetSessionButton() {}
+  function handleResetSessionButton() {
+    setIsPaused(false)
+    setSessionSeconds(totalSessionSeconds)
+  }
 
   return (
     <YStack f={1}>

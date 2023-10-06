@@ -26,8 +26,6 @@ const RADIUS = calculateRadius(CIRCLE_LENGTH)
 const OUTER_CIRCLE_RADIUS = calculateRadius(OUTER_CIRCLE_LENGTH)
 const INNER_CIRCLE_RADIUS = calculateRadius(INNER_CIRCLE_LENGTH)
 
-const sessionSeconds = 900
-
 const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 const AnimatedText = Animated.createAnimatedComponent(Text)
@@ -39,13 +37,20 @@ interface TimerProps {
 
 export function Timer() {
   const {
-    state: { isPaused, sessionSeconds, totalSessions, completedSessions },
+    state: {
+      isPaused,
+      sessionSeconds,
+      totalSessionSeconds,
+      totalSessions,
+      completedSessions,
+    },
+    action: { setSessionSeconds },
   } = useTimerStore()
 
-  const [totalSeconds, setTotalSeconds] = useState(sessionSeconds)
+  // const [totalSeconds, setTotalSeconds] = useState(SESSION_SECONDS)
   const progress = useSharedValue(1)
-  const minutes = useSharedValue(totalSeconds / 60)
-  const seconds = useSharedValue(totalSeconds % 60)
+  const minutes = useSharedValue(sessionSeconds / 60)
+  const seconds = useSharedValue(sessionSeconds % 60)
   const theme = useTheme()
 
   const innerCircleAnimatedProps = useAnimatedProps(() => ({
@@ -81,17 +86,19 @@ export function Timer() {
   }, [])
 
   useEffect(() => {
-    if (totalSeconds === 0 || isPaused) return
+    if (sessionSeconds === 0 || isPaused) return
 
     setTimeout(() => {
-      minutes.value = Math.floor(totalSeconds / 60)
-      seconds.value = totalSeconds % 60
+      minutes.value = Math.floor(sessionSeconds / 60)
+      seconds.value = sessionSeconds % 60
 
-      setTotalSeconds(totalSeconds - 1)
+      console.log(sessionSeconds)
 
-      progress.value = withTiming(totalSeconds / sessionSeconds)
+      setSessionSeconds(sessionSeconds - 1)
+
+      progress.value = withTiming(sessionSeconds / totalSessionSeconds)
     }, 1000)
-  }, [totalSeconds, isPaused])
+  }, [sessionSeconds, isPaused])
 
   return (
     <>
