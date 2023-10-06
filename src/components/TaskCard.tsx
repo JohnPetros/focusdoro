@@ -1,19 +1,22 @@
 import { BookmarkMinus } from 'lucide-react-native'
+
 import { H4, Square, XStack, YStack, useTheme } from 'tamagui'
 import { RoundButton } from './RoundButton'
-import { ClockClockwise } from 'phosphor-react-native'
 import { SessionCounter } from './SessionCounter'
+import { Icon } from 'phosphor-react-native'
 
 interface TaskCardProps {
   isActive?: boolean
   totalSessions: number
   completedSessions: number
+  icon: Icon
 }
 
 export function TaskCard({
   isActive = false,
   totalSessions,
   completedSessions,
+  icon: Icon,
 }: TaskCardProps) {
   const theme = useTheme()
 
@@ -35,7 +38,7 @@ export function TaskCard({
         <BookmarkMinus color={theme[color].val} />
       </Square>
       <YStack ai="center" gap={8}>
-        <H4>Learning UI</H4>
+        <H4 fontSize={20}>Learning UI</H4>
         <SessionCounter
           isActive={isActive}
           totalAmount={totalSessions}
@@ -47,7 +50,7 @@ export function TaskCard({
         color="$blue10"
         bc={theme[color].val}
         size="$3"
-        icon={<ClockClockwise color={theme.blue12.val} size={24} />}
+        icon={<Icon color={theme.blue12.val} size={24} />}
       />
     </XStack>
   )
