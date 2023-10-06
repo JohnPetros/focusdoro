@@ -7,15 +7,24 @@ import {
   Pause,
   ClockCounterClockwise,
   Square as Reset,
+  HourglassHigh,
 } from 'phosphor-react-native'
 
 import { Timer } from '../components/Timer'
 import { useTimerStore } from '../hooks/useTimerStore'
+import { useToastController } from '@tamagui/toast'
 
 export function Pomodoro() {
   // const [isPaused, setIsPaused] = useState(false)
   const {
-    state: { isPaused, totalSessions, completedSessions, totalSessionSeconds },
+    state: {
+      isPaused,
+      isBreak,
+      isLongBreak,
+      totalSessions,
+      completedSessions,
+      totalSessionSeconds,
+    },
     action: { setIsPaused, setSessionSeconds, setCompletedSessions },
   } = useTimerStore()
 
@@ -33,14 +42,14 @@ export function Pomodoro() {
   function handleResetPomodoroButton() {
     setIsPaused(false)
     setSessionSeconds(totalSessionSeconds)
-    setCompletedSessions(1)
+    setCompletedSessions(completedSessions + 1)
   }
 
   return (
     <YStack f={1}>
       <Square pt={40} px={24} w="100%" position="absolute" ai="center">
         <TaskCard
-          isActive={!isPaused}
+          isActive={!isPaused && (!isBreak)}
           totalSessions={totalSessions}
           completedSessions={completedSessions}
         />

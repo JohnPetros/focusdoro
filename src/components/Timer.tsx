@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Dimensions, StyleSheet } from 'react-native'
 import { calculateRadius } from '../utils/functions/calculateRadius'
 
@@ -16,7 +16,8 @@ import { XStack } from 'tamagui'
 import { useToastController } from '@tamagui/toast'
 
 import { HourglassHigh, Pause } from 'phosphor-react-native'
-import { useTimerStore } from '../hooks/useTimerStore'
+import { SESSION_SECONDS, useTimerStore } from '../hooks/useTimerStore'
+import { convertSecondsToTime } from '../utils/functions/convertSecondsToTime'
 
 const { width, height } = Dimensions.get('window')
 
@@ -37,16 +38,24 @@ export function Timer() {
   const {
     state: {
       isPaused,
+      isBreak,
+      isLongBreak,
       sessionSeconds,
       breakSeconds,
+      longBreakSeconds,
       totalSessionSeconds,
       totalSessions,
       completedSessions,
     },
-    action: { setSessionSeconds, setIsBreak, setBreakSeconds },
+    action: {
+      setSessionSeconds,
+      setIsBreak,
+      setIsLongBreak,
+      setTotalSessionSeconds,
+      setCompletedSessions,
+    },
   } = useTimerStore()
 
-  // const [totalSeconds, setTotalSeconds] = useState(SESSION_SECONDS)
   const progress = useSharedValue(1)
   const minutes = useSharedValue(sessionSeconds / 60)
   const seconds = useSharedValue(sessionSeconds % 60)
@@ -81,17 +90,57 @@ export function Timer() {
     },
   })
 
+  function showToast(message: string) {
+    toast.show(message, {
+      icon: HourglassHigh,
+      duration: 3000,
+    })
+  }
+
   useEffect(() => {
-    progress.value = withTiming(1, { duration: 2000 })
+    progress.value = withTiming(1, { duration: 1000 })
   }, [])
 
   useEffect(() => {
-    if (sessionSeconds === 0) {
+    const isSessionEnd = sessionSeconds === -1
+
+    if (isSessionEnd && isLongBreak) {
+      setIsLongBreak(false)
+      setSessionSeconds(SESSION_SECONDS)
+      setTotalSessionSeconds(SESSION_SECONDS)
+      setCompletedSessions(1)
+
+      showToast('New session for ' + convertSecondsToTime(SESSION_SECONDS))
+      return
+    }
+
+    if (isSessionEnd && completedSessions === totalSessions) {
+      setIsLongBreak(true)
+      setSessionSeconds(longBreakSeconds)
+      setTotalSessionSeconds(longBreakSeconds)
+
+      showToast(
+        `Take a long break for ${convertSecondsToTime(longBreakSeconds)}`
+      )
+      return
+    }
+
+    if (isSessionEnd && isBreak) {
+      setIsBreak(false)
+      setSessionSeconds(SESSION_SECONDS)
+      setTotalSessionSeconds(SESSION_SECONDS)
+      setCompletedSessions(completedSessions + 1)
+
+      showToast('New session for ' + convertSecondsToTime(SESSION_SECONDS))
+      return
+    }
+
+    if (isSessionEnd) {
       setIsBreak(true)
       setSessionSeconds(breakSeconds)
-      toast.show(`Take a break for ${breakSeconds / 60} minutes`, {
-        icon: HourglassHigh,
-      })
+      setTotalSessionSeconds(breakSeconds)
+
+      showToast(`Take a break for ${convertSecondsToTime(breakSeconds)}`)
       return
     }
 
@@ -130,7 +179,11 @@ export function Timer() {
           zIndex={50}
           animatedProps={opacityAnimatedProp}
         >
-          {completedSessions} of {totalSessions} sessions
+          {isBreak
+            ? `${
+                isLongBreak ? 'Long break' : 'break'
+              } for ${convertSecondsToTime(breakSeconds)}`
+            : `${completedSessions} of ${totalSessions} sessions`}
         </AnimatedText>
         {isPaused && (
           <Square
