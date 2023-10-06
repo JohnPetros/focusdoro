@@ -5,13 +5,13 @@ import { ClockClockwise } from 'phosphor-react-native'
 import { SessionCounter } from './SessionCounter'
 
 interface TaskCardProps {
-  isActive: boolean
+  isActive?: boolean
   totalSessions: number
   completedSessions: number
 }
 
 export function TaskCard({
-  isActive,
+  isActive = false,
   totalSessions,
   completedSessions,
 }: TaskCardProps) {
