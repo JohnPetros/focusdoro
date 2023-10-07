@@ -3,6 +3,7 @@ import { create } from 'zustand'
 export const SESSION_SECONDS = 15
 
 type StoreState = {
+  taskTitle: string
   sessionSeconds: number
   breakSeconds: number
   longBreakSeconds: number
@@ -22,6 +23,7 @@ type StoreAction = {
   setBreakSeconds: (seconds: number) => void
   setLongBreakSeconds: (seconds: number) => void
   setTotalSessionSeconds: (totalSeconds: number) => void
+  setTotalSessions: (totalSessions: number) => void
   setCompletedSessions: (completedSession: number) => void
 }
 
@@ -32,6 +34,7 @@ type StoreProps = {
 
 export const useTimerStore = create<StoreProps>((set) => ({
   state: {
+    taskTitle: '',
     totalSessionSeconds: 15,
     sessionSeconds: 15,
     breakSeconds: 5,
@@ -88,6 +91,12 @@ export const useTimerStore = create<StoreProps>((set) => ({
     setCompletedSessions: (completedSessions: number) =>
       set(({ state, action }: StoreProps) => ({
         state: { ...state, completedSessions },
+        action,
+      })),
+
+    setTotalSessions: (totalSessions: number) =>
+      set(({ state, action }: StoreProps) => ({
+        state: { ...state, totalSessions },
         action,
       })),
   },

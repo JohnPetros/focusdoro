@@ -20,7 +20,6 @@ import { BookOpen } from 'phosphor-react-native'
 import { storage } from '../../storage'
 
 import { convertMinutesToSeconds } from '../../utils/functions/convertMinutesToSeconds'
-import { Task } from '../../@types/task'
 
 export default function Pomodoro() {
   const {
@@ -31,6 +30,7 @@ export default function Pomodoro() {
       totalSessions,
       completedSessions,
       totalSessionSeconds,
+      taskTitle,
     },
     action: {
       setIsPaused,
@@ -41,10 +41,10 @@ export default function Pomodoro() {
       setTotalSessionSeconds,
       setTotalSessions,
       setCompletedSessions,
+      setTaskTitle,
     },
   } = useTimerStore()
   const { taskId } = useLocalSearchParams()
-  const [taskTitle, setTaskTitle] = useState('')
 
   const theme = useTheme()
 
@@ -75,6 +75,8 @@ export default function Pomodoro() {
       const task = await storage.getTask(String(taskId))
 
       if (task) {
+        console.log(task)
+
         setTotalSessions(task.totalSessions)
         setCompletedSessions(task.completedSessions)
         setSessionSeconds(convertMinutesToSeconds(task.sessionMinutes))
