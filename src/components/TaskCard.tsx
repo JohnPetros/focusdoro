@@ -6,6 +6,7 @@ import { SessionCounter } from './SessionCounter'
 import { Icon } from 'phosphor-react-native'
 
 interface TaskCardProps {
+  title: string
   isActive?: boolean
   totalSessions: number
   completedSessions: number
@@ -13,6 +14,7 @@ interface TaskCardProps {
 }
 
 export function TaskCard({
+  title,
   isActive = false,
   totalSessions,
   completedSessions,
@@ -24,8 +26,8 @@ export function TaskCard({
 
   return (
     <XStack
-      borderWidth={1}
-      borderColor="$blue4"
+      borderWidth={2}
+      borderColor="$blue6"
       ai="center"
       jc="space-between"
       px={24}
@@ -38,7 +40,7 @@ export function TaskCard({
         <BookmarkMinus color={theme[color].val} />
       </Square>
       <YStack ai="center" gap={8}>
-        <H4 fontSize={20}>Learning UI</H4>
+        <H4 fontSize={20}>{title}</H4>
         <SessionCounter
           isActive={isActive}
           totalAmount={totalSessions}
