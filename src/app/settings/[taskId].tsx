@@ -1,10 +1,18 @@
-import { NumberInput } from '../../components/NumberInput'
 import { useState, useEffect } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Dimensions } from 'react-native'
 
-import { Button, H1, Label, XStack, YStack, useTheme } from 'tamagui'
+import {
+  Button as BackButton,
+  H1,
+  Label,
+  XStack,
+  YStack,
+  useTheme,
+} from 'tamagui'
+import { NumberInput } from '../../components/NumberInput'
 import { TextInput } from '../../components/TextInput'
+import { Button } from '../../components/Button'
 import { CaretLeft } from 'phosphor-react-native'
 
 import { storage } from '../../storage'
@@ -27,6 +35,10 @@ export default function Settings() {
     router.back()
   }
 
+  function handlePlayPomodoroButton() {
+    router.push('/pomodoro/' + taskId)
+  }
+
   async function handleTaskTitleInputBlur() {
     if (task) await storage.saveTask(task)
   }
@@ -47,23 +59,27 @@ export default function Settings() {
 
   if (task)
     return (
-      <YStack position="relative" f={1} bc="$blue2" pt={40} px={24}>
+      <YStack position="relative" f={1} bc="$blue2" px={24} py={40}>
         <XStack ai="center" gap={12}>
-          <Button unstyled ai="center" jc="center" onPress={handleBackButton}>
+          <BackButton
+            unstyled
+            ai="center"
+            jc="center"
+            onPress={handleBackButton}
+          >
             <CaretLeft color={theme.blue12.val} weight="bold" />
-          </Button>
+          </BackButton>
           <H1 fontSize={24} letterSpacing={1.1}>
             Task Settings
           </H1>
         </XStack>
-        <YStack mt={12}>
+        <YStack mt={12} gap={8}>
           <Label fontSize={16}>Title</Label>
           <TextInput
             value={taskTitle}
             onChangeText={setTaskTitle}
             onBlur={handleTaskTitleInputBlur}
             w="100%"
-            mt={4}
           />
         </YStack>
 
@@ -89,6 +105,9 @@ export default function Settings() {
             value={task.longBreakMinutes}
             width={INPUT_NUMBER_WIDTH}
           />
+        </XStack>
+        <XStack mt="auto">
+          <Button onPress={handlePlayPomodoroButton}>Play Pomodoro</Button>
         </XStack>
       </YStack>
     )

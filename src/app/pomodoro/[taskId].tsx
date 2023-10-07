@@ -1,7 +1,11 @@
+import { useCallback, useState } from 'react'
+import { SESSION_SECONDS, useTimerStore } from '../../hooks/useTimerStore'
+import { useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { Square, XStack, YStack, useTheme } from 'tamagui'
-import { RoundButton } from '../components/RoundButton'
-import { TaskCard } from '../components/TaskCard'
 
+import { RoundButton } from '../../components/RoundButton'
+import { TaskCard } from '../../components/TaskCard'
+import { Timer } from '../../components/Timer'
 import {
   Play,
   Pause,
@@ -11,8 +15,12 @@ import {
   House,
 } from 'phosphor-react-native'
 
-import { Timer } from '../components/Timer'
-import { SESSION_SECONDS, useTimerStore } from '../hooks/useTimerStore'
+import { BookOpen } from 'phosphor-react-native'
+
+import { storage } from '../../storage'
+
+import { convertMinutesToSeconds } from '../../utils/functions/convertMinutesToSeconds'
+import { Task } from '../../@types/task'
 
 export default function Pomodoro() {
   const {
@@ -29,9 +37,14 @@ export default function Pomodoro() {
       setIsBreak,
       setIsLongBreak,
       setSessionSeconds,
+      setBreakSeconds,
+      setTotalSessionSeconds,
+      setTotalSessions,
       setCompletedSessions,
     },
   } = useTimerStore()
+  const { taskId } = useLocalSearchParams()
+  const [taskTitle, setTaskTitle] = useState('')
 
   const theme = useTheme()
 
@@ -57,13 +70,38 @@ export default function Pomodoro() {
     setCompletedSessions(1)
   }
 
+  async function fetchTask() {
+    try {
+      const task = await storage.getTask(String(taskId))
+
+      if (task) {
+        setTotalSessions(task.totalSessions)
+        setCompletedSessions(task.completedSessions)
+        setSessionSeconds(convertMinutesToSeconds(task.sessionMinutes))
+        setBreakSeconds(convertMinutesToSeconds(task.sessionMinutes))
+        setTotalSessionSeconds(convertMinutesToSeconds(task.sessionMinutes))
+        setTaskTitle(task.title)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTask()
+    }, [])
+  )
+
   return (
-    <YStack f={1}>
+    <YStack f={1} bc="$blue2">
       <Square pt={40} px={24} w="100%" position="absolute" ai="center">
         <TaskCard
+          title={taskTitle}
           isActive={!isPaused && !isBreak}
           totalSessions={totalSessions}
           completedSessions={completedSessions}
+          icon={BookOpen}
         />
         <XStack>
           <RoundButton
