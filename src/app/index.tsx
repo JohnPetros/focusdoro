@@ -11,6 +11,7 @@ import uuid from 'react-native-uuid'
 
 import { storage } from '../storage'
 import type { Task } from '../@types/task'
+import { FlatList } from 'react-native-gesture-handler'
 
 export default function Home() {
   const [newTaskTitle, setNewTaskTitle] = useState('')
@@ -33,11 +34,9 @@ export default function Home() {
 
     const taskId = uuid.v4().toString()
 
-    console.log(taskId)
-
     const newTask: Task = {
       id: taskId,
-      title: newTaskTitle,
+      title: newTaskTitle.trim(),
       completedSessions: 1,
       totalSessions: 3,
       sessionMinutes: 20,
@@ -52,14 +51,13 @@ export default function Home() {
       handleError('Failed to save task')
     }
 
-    router.push('/settings/' + taskId)
+    setNewTaskTitle('')
+    router.push('settings/' + taskId)
   }
 
   async function fetchTasks() {
     try {
       const tasks = await storage.getTasks()
-
-      console.log(tasks)
 
       if (tasks) setTasks(tasks)
     } catch (error) {
@@ -96,15 +94,19 @@ export default function Home() {
         Tasks ({tasks.length})
       </H2>
       <YStack gap={12}>
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            title={task.title}
-            totalSessions={task.totalSessions}
-            completedSessions={task.completedSessions}
-            icon={Play}
-          />
-        ))}
+        <FlatList
+          data={tasks}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TaskCard
+              key={item.id}
+              title={item.title}
+              totalSessions={item.totalSessions}
+              completedSessions={item.completedSessions}
+              icon={Play}
+            />
+          )}
+        />
       </YStack>
     </YStack>
   )
