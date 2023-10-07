@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Button, Label, Square, Text, XStack, YStack, useTheme } from 'tamagui'
+import { Button, Square, Text, YStack } from 'tamagui'
 import NumberPicker from './NumberPicker'
 
-interface InputNumberProps {
+interface NumberInputProps {
   label: string
   value: number
   maxValue: number
@@ -11,14 +11,14 @@ interface InputNumberProps {
   width: number
 }
 
-export function InputNumber({
+export function NumberInput({
   label,
   value,
   maxValue,
   minValue,
   unit = 'minutes',
   width,
-}: InputNumberProps) {
+}: NumberInputProps) {
   const [isNumberPickerVisible, setIsNumberPickerVisible] = useState(false)
 
   function handleShowNumberPickerButton() {
