@@ -25,6 +25,7 @@ type StoreAction = {
   setTotalSessionSeconds: (totalSeconds: number) => void
   setTotalSessions: (totalSessions: number) => void
   setCompletedSessions: (completedSession: number) => void
+  setTaskTitle: (taskTitle: string) => void
 }
 
 type StoreProps = {
@@ -97,6 +98,12 @@ export const useTimerStore = create<StoreProps>((set) => ({
     setTotalSessions: (totalSessions: number) =>
       set(({ state, action }: StoreProps) => ({
         state: { ...state, totalSessions },
+        action,
+      })),
+
+    setTaskTitle: (taskTitle: string) =>
+      set(({ state, action }: StoreProps) => ({
+        state: { ...state, taskTitle },
         action,
       })),
   },
