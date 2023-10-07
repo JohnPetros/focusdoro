@@ -1,14 +1,15 @@
 import { NumberInput } from '../../components/NumberInput'
 import { useState, useEffect } from 'react'
-import { useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Dimensions } from 'react-native'
 
 import { Button, H1, Label, XStack, YStack, useTheme } from 'tamagui'
 import { TextInput } from '../../components/TextInput'
+import { CaretLeft } from 'phosphor-react-native'
 
 import { storage } from '../../storage'
+
 import type { Task } from '../../@types/task'
-import { CaretLeft } from 'phosphor-react-native'
 
 const { width } = Dimensions.get('window')
 
@@ -20,6 +21,11 @@ export default function Settings() {
   const [taskTitle, setTaskTitle] = useState('')
   const { taskId } = useLocalSearchParams()
   const theme = useTheme()
+  const router = useRouter()
+
+  function handleBackButton() {
+    router.back()
+  }
 
   async function handleTaskTitleInputBlur() {
     if (task) await storage.saveTask(task)
@@ -43,29 +49,24 @@ export default function Settings() {
     return (
       <YStack position="relative" f={1} bc="$blue2" pt={40} px={24}>
         <XStack ai="center" gap={12}>
-          <Button
-            unstyled
-            bc="$blue4"
-            w={40}
-            h={40}
-            br={20}
-            ai="center"
-            jc="center"
-          >
-            <CaretLeft color={theme.blue12.val} />
+          <Button unstyled ai="center" jc="center" onPress={handleBackButton}>
+            <CaretLeft color={theme.blue12.val} weight="bold" />
           </Button>
           <H1 fontSize={24} letterSpacing={1.1}>
             Task Settings
           </H1>
         </XStack>
-        <Label fontSize={16}>Title</Label>
-        <TextInput
-          value={taskTitle}
-          onChangeText={setTaskTitle}
-          onBlur={handleTaskTitleInputBlur}
-          w="100%"
-          mt={4}
-        />
+        <YStack mt={12}>
+          <Label fontSize={16}>Title</Label>
+          <TextInput
+            value={taskTitle}
+            onChangeText={setTaskTitle}
+            onBlur={handleTaskTitleInputBlur}
+            w="100%"
+            mt={4}
+          />
+        </YStack>
+
         <XStack ai="center" gap={PADDING_BETWEEN} mt={24}>
           <NumberInput
             minValue={0}
