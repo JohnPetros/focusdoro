@@ -39,11 +39,13 @@
     "react-native-shadow-2": "^7.0.8",
     "react-native-svg": "^13.14.0",
     "tamagui": "^1.74.9",
+    "uuid": "^9.0.1",
     "zustand": "^4.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.14",
+    "@types/uuid": "^9.0.4",
     "babel-plugin-module-resolver": "^5.0.0",
     "react-native-svg-transformer": "^1.1.0",
     "typescript": "^5.1.3"
