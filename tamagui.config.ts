@@ -3,8 +3,8 @@ import { createInterFont } from '@tamagui/font-inter'
 import { createMedia } from '@tamagui/react-native-media-driver'
 import { shorthands } from '@tamagui/shorthands'
 import { themes, tokens } from '@tamagui/themes'
-import { Icon } from 'phosphor-react-native'
 import { createTamagui } from 'tamagui'
+import { Icon } from 'phosphor-react-native'
 
 const animations = createAnimations({
   bouncy: {
