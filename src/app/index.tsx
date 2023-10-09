@@ -7,11 +7,12 @@ import { TaskCard } from '../components/TaskCard'
 import { RoundButton } from '../components/RoundButton'
 import { TextInput } from '../components/TextInput'
 import { Play, Plus, SmileyXEyes } from 'phosphor-react-native'
+import { FlatList } from 'react-native-gesture-handler'
+
 import uuid from 'react-native-uuid'
 
 import { storage } from '../storage'
 import type { Task } from '../@types/task'
-import { FlatList } from 'react-native-gesture-handler'
 
 export default function Home() {
   const [newTaskTitle, setNewTaskTitle] = useState('')
@@ -24,6 +25,10 @@ export default function Home() {
     toast.show(message, {
       icon: SmileyXEyes,
     })
+  }
+
+  function handleTaskButton(taskId: string) {
+    // router.push('/pomodoro/' + taskId)
   }
 
   async function handleNewTaskButton() {
@@ -42,17 +47,20 @@ export default function Home() {
       sessionMinutes: 20,
       breakMinutes: 5,
       longBreakMinutes: 15,
+      isBreak: false,
+      isLongBreak: false,
+      isSelected: true,
     }
 
     try {
-      await storage.saveTask(newTask)
+      await storage.createTask(newTask)
     } catch (error) {
       console.error(error)
       handleError('Failed to save task')
     }
 
     setNewTaskTitle('')
-    router.push('settings/' + taskId)
+    // router.push('/settinng')
   }
 
   async function fetchTasks() {
@@ -104,6 +112,8 @@ export default function Home() {
               totalSessions={item.totalSessions}
               completedSessions={item.completedSessions}
               icon={Play}
+              isActive={item.isSelected}
+              onPress={() => handleTaskButton(item.id)}
             />
           )}
         />

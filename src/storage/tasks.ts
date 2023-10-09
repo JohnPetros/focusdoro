@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { SELECTED_TASK, TASKS_KEY } from './keys'
+import { TASKS_KEY } from './keys'
 import type { Task } from '../@types/task'
 
 export default {
@@ -15,25 +15,28 @@ export default {
     if (tasks) return await JSON.parse(tasks)
   },
 
-  async getSelectedTask(): Promise<Task | undefined> {
-    const selectedTask = await AsyncStorage.getItem(SELECTED_TASK)
+  async createTask(task: Task) {
+    const tasks = await this.getTasks()
+    let tasksData = tasks ?? []
 
-    if (selectedTask) return await JSON.parse(selectedTask)
-  },
-
-  async selectTask(selectedTask: Task) {
-    await AsyncStorage.setItem(SELECTED_TASK, JSON.stringify(selectedTask))
-  },
-
-  async saveTask(newTask: Task) {
-    const tasks = await AsyncStorage.getItem(TASKS_KEY)
-    let tasksData = tasks ? JSON.parse(tasks) : []
-
-    const updatedTasks = [...tasksData, newTask]
+    const updatedTasks = [...tasksData, task]
     await AsyncStorage.setItem(TASKS_KEY, JSON.stringify(updatedTasks))
+  },
+
+  async destroyTask(id: string) {
+    const tasks = await this.getTasks()
+
+    const updatedTasks = tasks?.filter((task) => task.id !== id)
+
+    if (updatedTasks)
+      AsyncStorage.setItem(TASKS_KEY, JSON.stringify(updatedTasks))
   },
 
   async destroyAllTasks() {
     await AsyncStorage.removeItem(TASKS_KEY)
+  },
+
+  async updateTask(task: Task) {
+    await Promise.all([this.destroyTask(task.id), this.createTask(task)])
   },
 }
