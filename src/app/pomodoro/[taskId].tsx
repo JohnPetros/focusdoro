@@ -45,6 +45,7 @@ export default function Pomodoro() {
     },
   } = useTimerStore()
   const { taskId } = useLocalSearchParams()
+  const [canPlay, setCanPlay] = useState(false)
 
   const theme = useTheme()
 
@@ -73,16 +74,18 @@ export default function Pomodoro() {
   async function fetchTask() {
     try {
       const task = await storage.getTask(String(taskId))
+      await storage.destroyTask(String(taskId))
 
       if (task) {
-        console.log(task)
-
         setTotalSessions(task.totalSessions)
         setCompletedSessions(task.completedSessions)
+        setBreakSeconds(convertMinutesToSeconds(task.breakMinutes))
         setSessionSeconds(convertMinutesToSeconds(task.sessionMinutes))
-        setBreakSeconds(convertMinutesToSeconds(task.sessionMinutes))
         setTotalSessionSeconds(convertMinutesToSeconds(task.sessionMinutes))
         setTaskTitle(task.title)
+
+
+        setCanPlay(true)
       }
     } catch (error) {
       console.error(error)
@@ -104,19 +107,20 @@ export default function Pomodoro() {
           totalSessions={totalSessions}
           completedSessions={completedSessions}
           icon={BookOpen}
+          onPress={null}
         />
-        <XStack>
+        <XStack w="100%" mt={20} ai="center" jc="flex-end" gap={16}>
           <RoundButton
             shadowColor={theme.blue12.val}
-            size="$5"
-            icon={<Gear color={theme.blue12.val} size={24} />}
+            size="$2"
+            icon={<Gear color={theme.blue12.val} size={16} weight="bold" />}
             bc="$blue2"
             onPress={handleResetSessionButton}
           />
           <RoundButton
             shadowColor={theme.blue12.val}
-            size="$5"
-            icon={<House color={theme.blue12.val} size={24} />}
+            size="$2"
+            icon={<House color={theme.blue12.val} size={16} weight="bold" />}
             bc="$blue2"
             onPress={handleResetSessionButton}
           />
@@ -124,7 +128,7 @@ export default function Pomodoro() {
       </Square>
 
       <YStack f={1} ai="center" jc="center" position="relative">
-        <Timer />
+        <Timer canPlay={canPlay} />
 
         <YStack position="absolute" ai="center" gap={16} bottom={100}>
           <RoundButton

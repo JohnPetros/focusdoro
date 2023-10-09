@@ -34,7 +34,11 @@ const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 const AnimatedText = Animated.createAnimatedComponent(Text)
 const AnimatedSquare = Animated.createAnimatedComponent(Square)
 
-export function Timer() {
+interface TimerProps {
+  canPlay: boolean
+}
+
+export function Timer({ canPlay }: TimerProps) {
   const {
     state: {
       isPaused,
@@ -57,8 +61,8 @@ export function Timer() {
   } = useTimerStore()
 
   const progress = useSharedValue(1)
-  const minutes = useSharedValue(sessionSeconds / 60)
-  const seconds = useSharedValue(sessionSeconds % 60)
+  const minutes = useSharedValue(canPlay ? sessionSeconds / 60 : 0)
+  const seconds = useSharedValue(canPlay ? sessionSeconds % 60 : 0)
   const theme = useTheme()
   const toast = useToastController()
 
@@ -98,11 +102,13 @@ export function Timer() {
   }
 
   useEffect(() => {
+    console.log({ breakSeconds })
+
     progress.value = withTiming(1, { duration: 1000 })
   }, [])
 
   useEffect(() => {
-    if (isPaused) return
+    if (isPaused || !canPlay) return
 
     const isSessionEnd = sessionSeconds === -1
 
@@ -154,7 +160,7 @@ export function Timer() {
 
       progress.value = withTiming(sessionSeconds / totalSessionSeconds)
     }, 1000)
-  }, [sessionSeconds, isPaused])
+  }, [sessionSeconds, isPaused, canPlay])
 
   return (
     <>
