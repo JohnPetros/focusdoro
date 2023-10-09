@@ -11,6 +11,7 @@ interface TaskCardProps {
   totalSessions: number
   completedSessions: number
   icon: Icon
+  onPress: VoidFunction | null
 }
 
 export function TaskCard({
@@ -19,6 +20,7 @@ export function TaskCard({
   totalSessions,
   completedSessions,
   icon: Icon,
+  onPress,
 }: TaskCardProps) {
   const theme = useTheme()
 
@@ -53,6 +55,7 @@ export function TaskCard({
         bc={theme[color].val}
         size="$3"
         icon={<Icon color={theme.blue12.val} size={24} />}
+        onPress={onPress}
       />
     </XStack>
   )
