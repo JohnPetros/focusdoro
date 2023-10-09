@@ -9,6 +9,7 @@ interface NumberInputProps {
   minValue: number
   unit?: string
   width: number
+  onChange: (value: number) => void
 }
 
 export function NumberInput({
@@ -18,6 +19,7 @@ export function NumberInput({
   minValue,
   unit = 'minutes',
   width,
+  onChange,
 }: NumberInputProps) {
   const [isNumberPickerVisible, setIsNumberPickerVisible] = useState(false)
 
@@ -27,7 +29,7 @@ export function NumberInput({
 
   function handleNumberPickerConfirm(value: number) {
     setIsNumberPickerVisible(false)
-    console.log(value)
+    onChange(value)
   }
 
   return (

@@ -36,11 +36,13 @@ export default function Settings() {
   }
 
   function handlePlayPomodoroButton() {
-    router.push('/pomodoro/' + taskId)
+    // router.push('/pomodoro/' + taskId)
   }
 
+  function handleNumberInputChange(value: number) {}
+
   async function handleTaskTitleInputBlur() {
-    if (task) await storage.saveTask(task)
+    if (task) await storage.createTask(task)
   }
 
   async function fetchTask() {
@@ -90,6 +92,7 @@ export default function Settings() {
             label="Session"
             value={task.sessionMinutes}
             width={INPUT_NUMBER_WIDTH}
+            onChange={handleNumberInputChange}
           />
           <NumberInput
             minValue={0}
@@ -97,6 +100,7 @@ export default function Settings() {
             label="Break"
             value={task.breakMinutes}
             width={INPUT_NUMBER_WIDTH}
+            onChange={handleNumberInputChange}
           />
           <NumberInput
             minValue={0}
@@ -104,6 +108,7 @@ export default function Settings() {
             label="Long break"
             value={task.longBreakMinutes}
             width={INPUT_NUMBER_WIDTH}
+            onChange={handleNumberInputChange}
           />
         </XStack>
         <XStack mt="auto">
