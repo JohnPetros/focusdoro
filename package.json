@@ -1,9 +1,10 @@
 {
-  "name": "my-app",
+  "name": "focusdoro",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
+    "prod": "expo start --no-dev --minify",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web"
@@ -12,6 +13,7 @@
     "@expo-google-fonts/inter": "^0.2.3",
     "@gorhom/portal": "^1.0.14",
     "@react-native-async-storage/async-storage": "1.18.2",
+    "@tamagui/alert-dialog": "^1.74.13",
     "@tamagui/animations-react-native": "^1.74.9",
     "@tamagui/babel-plugin": "^1.74.9",
     "@tamagui/config": "^1.74.9",
