@@ -1,17 +1,20 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useFocusEffect, useRouter } from 'expo-router'
 import { useToastController } from '@tamagui/toast'
 
-import { H2, XStack, YStack, useTheme } from 'tamagui'
+import { FlatList } from 'react-native'
+import { Button, H2, XStack, YStack, useTheme } from 'tamagui'
 import { TaskCard } from '../components/TaskCard'
 import { RoundButton } from '../components/RoundButton'
 import { TextInput } from '../components/TextInput'
-import { Play, Plus, SmileyXEyes } from 'phosphor-react-native'
-import { FlatList } from 'react-native-gesture-handler'
+import { AlertContent, AlertRoot, AlertTrigger } from '../components/Alert'
+import { Play, Plus, SmileyXEyes, Trash } from 'phosphor-react-native'
+import { Swipeable } from 'react-native-gesture-handler'
 
 import uuid from 'react-native-uuid'
 
 import { storage } from '../storage'
+
 import type { Task } from '../@types/task'
 
 export default function Home() {
@@ -20,6 +23,7 @@ export default function Home() {
   const theme = useTheme()
   const router = useRouter()
   const toast = useToastController()
+  const swipeableRefs = useRef<Swipeable[]>([])
 
   function handleError(message: string) {
     toast.show(message, {
@@ -27,8 +31,21 @@ export default function Home() {
     })
   }
 
+  function handleAlertOpen(swipeRefIndex: number) {
+    swipeableRefs.current[swipeRefIndex]?.close()
+  }
+
   function handleTaskButton(taskId: string) {
-    // router.push('/pomodoro/' + taskId)
+    router.push('/pomodoro/' + taskId)
+  }
+
+  async function handleRemoveTaskButton(taskId: string) {
+    try {
+      await storage.destroyTask(taskId)
+    } catch (error) {
+      console.error(error)
+      handleError('Failed to remove task')
+    }
   }
 
   async function handleNewTaskButton() {
@@ -49,7 +66,7 @@ export default function Home() {
       longBreakMinutes: 15,
       isBreak: false,
       isLongBreak: false,
-      isSelected: true,
+      isSelected: false,
     }
 
     try {
@@ -60,7 +77,7 @@ export default function Home() {
     }
 
     setNewTaskTitle('')
-    // router.push('/settinng')
+    router.push('/settinng/' + taskId)
   }
 
   async function fetchTasks() {
@@ -105,16 +122,57 @@ export default function Home() {
         <FlatList
           data={tasks}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TaskCard
-              key={item.id}
-              title={item.title}
-              totalSessions={item.totalSessions}
-              completedSessions={item.completedSessions}
-              icon={Play}
-              isActive={item.isSelected}
-              onPress={() => handleTaskButton(item.id)}
-            />
+          renderItem={({ item, index }) => (
+            <></>
+            // <Swipeable
+            //   ref={(ref) => {
+            //     if (ref) swipeableRefs.current.push(ref)
+            //   }}
+            //   containerStyle={{
+            //     width: '100%',
+            //   }}
+            //   overshootLeft={false}
+            //   renderLeftActions={() => (
+            //     <AlertRoot>
+            //       <AlertContent
+            //         title="Danger"
+            //         description="Are you sure to remove this task"
+            //         onOpen={() => handleAlertOpen(index)}
+            //         onConfirm={() => handleRemoveTaskButton(item.id)}
+            //       />
+            //       <AlertTrigger asChild>
+            //         <Button
+            //           unstyled
+            //           bc="$red10"
+            //           ai="center"
+            //           jc="center"
+            //           px={8}
+            //           py={12}
+            //           w={90}
+            //           mb={12}
+            //           h="100%"
+            //           borderTopLeftRadius={12}
+            //           borderBottomLeftRadius={12}
+            //           focusStyle={{
+            //             opacity: 0.7,
+            //           }}
+            //         >
+            //           <Trash color={theme.blue12.val} weight="bold" size={32} />
+            //         </Button>
+            //       </AlertTrigger>
+            //     </AlertRoot>
+            //   )}
+            // >
+            //   <TaskCard
+            //     key={item.id}
+            //     title={item.title}
+            //     totalSessions={item.totalSessions}
+            //     completedSessions={item.completedSessions}
+            //     icon={Play}
+            //     isActive={item.isSelected}
+            //     onPress={() => handleTaskButton(item.id)}
+            //   />
+            // </Swipeable>
           )}
         />
       </YStack>
