@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { TASKS_KEY } from './keys'
 import type { Task } from '../@types/task'
 
-export default {
+export const tasks = {
   async getTask(id: string): Promise<Task | undefined> {
     const tasks = await AsyncStorage.getItem(TASKS_KEY)
 

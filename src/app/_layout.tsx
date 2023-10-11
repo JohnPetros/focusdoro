@@ -1,14 +1,19 @@
 import { StatusBar } from 'react-native'
-import * as SplashScreen from 'expo-splash-screen'
 
-import {  Stack } from 'expo-router'
-import { useFonts } from '@expo-google-fonts/inter'
-import { TamaguiProvider, YStack, Theme } from 'tamagui'
+import { SplashScreen, Stack } from 'expo-router'
+import { useFonts } from 'expo-font'
 import config from '../../tamagui.config'
-import { PortalProvider } from '@gorhom/portal'
-import { ToastProvider, ToastViewport } from '@tamagui/toast'
+
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { ToastProvider, ToastViewport } from '@tamagui/toast'
+import { PortalProvider } from '@gorhom/portal'
+import { TamaguiProvider, YStack, Theme } from 'tamagui'
 import { Toast } from '../components/Toast'
+
+export { ErrorBoundary } from 'expo-router'
+
+SplashScreen.preventAutoHideAsync()
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -19,7 +24,7 @@ export default function App() {
   if (!fontsLoaded) return null
 
   async function handleLayoutRootView() {
-    if (fontsLoaded) await SplashScreen.hideAsync()
+    if (fontsLoaded) SplashScreen.hideAsync()
   }
 
   return (
@@ -35,13 +40,15 @@ export default function App() {
                 backgroundColor="transparent"
                 translucent
               />
-              <YStack f={1} bg="$blue2" onLayout={handleLayoutRootView}>
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                  }}
-                />
-              </YStack>
+              <GestureHandlerRootView onLayout={handleLayoutRootView}>
+                <YStack f={1} bg="$blue2">
+                  <Stack
+                    screenOptions={{
+                      headerShown: false,
+                    }}
+                  />
+                </YStack>
+              </GestureHandlerRootView>
             </Theme>
           </SafeAreaProvider>
         </PortalProvider>
