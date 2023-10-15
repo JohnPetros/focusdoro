@@ -1,42 +1,37 @@
 {
   "expo": {
-    "name": "focusdoro",
-    "description": "Pomodoro app",
-    "slug": "focusdoro",
     "scheme": "focusdoro",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
+      "backgroundColor": "#ddffe2",
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "contain"
     },
-    "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
-    },
+    "icon": "./assets/icon.png",
+    "name": "focusdoro",
+    "slug": "focusdoro",
     "android": {
-      "versionCode": 1,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
       "package": "com.joaopcarvalho.focusdoro"
     },
-    "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
-    },
-    "plugins": ["expo-router"],
     "extra": {
-      "router": {
-        "origin": false
-      },
       "eas": {
         "projectId": "84f6e807-b969-4a67-b00e-fea1f4a02e28"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 33,
+            "targetSdkVersion": 33,
+            "buildToolsVersion": "33.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "13.0"
+          }
+        }
+      ]
+    ]
   }
 }

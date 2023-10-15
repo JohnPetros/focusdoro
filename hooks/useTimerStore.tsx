@@ -1,4 +1,4 @@
-import { create } from 'zustand'
+import { create } from "zustand"
 
 export const SESSION_SECONDS = 15
 
@@ -35,7 +35,7 @@ type StoreProps = {
 
 export const useTimerStore = create<StoreProps>((set) => ({
   state: {
-    taskTitle: '',
+    taskTitle: "",
     totalSessionSeconds: 15,
     sessionSeconds: 15,
     breakSeconds: 5,

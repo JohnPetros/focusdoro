@@ -1,19 +1,27 @@
+process.env.TAMAGUI_TARGET = "native"; // Don't forget to specify your TAMAGUI_TARGET here
+
 module.exports = function (api) {
-  api.cache(true)
+  api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
+    presets: ["babel-preset-expo"],
     plugins: [
-      'transform-inline-environment-variables',
-      'expo-router/babel',
       [
-        '@tamagui/babel-plugin',
+        "transform-inline-environment-variables",
+        // NOTE: include is optional, you can leave this part out
         {
-          components: ['tamagui'],
-          config: './tamagui.config.ts',
-          logTimings: true,
-        },
+          include: ["TAMAGUI_TARGET", "EXPO_ROUTER_APP_ROOT"]
+        }
       ],
-      'react-native-reanimated/plugin',
-    ],
-  }
-}
+      [
+        "@tamagui/babel-plugin",
+        {
+          components: ["tamagui"],
+          config: "./tamagui.config.ts",
+          logTimings: true
+        }
+      ],
+      "react-native-reanimated/plugin",
+      require.resolve("expo-router/babel")
+    ]
+  };
+};

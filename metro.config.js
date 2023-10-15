@@ -1,19 +1,14 @@
-const { getDefaultConfig } = require('expo/metro-config')
+// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig } = require("expo/metro-config")
 
-module.exports = (() => {
-  const config = getDefaultConfig(__dirname)
+/** @type {import('expo/metro-config').MetroConfig} */
+const config = getDefaultConfig(__dirname, {
+  // [Web-only]: Enables CSS support in Metro.
+  isCSSEnabled: true,
+})
 
-  const { transformer, resolver } = config
+// Expo 49 issue: default metro config needs to include "mjs"
+// https://github.com/expo/expo/issues/23180
+config.resolver.sourceExts.push("mjs")
 
-  config.transformer = {
-    ...transformer,
-    babelTransformerPath: require.resolve('react-native-svg-transformer'),
-  }
-  config.resolver = {
-    ...resolver,
-    assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
-    sourceExts: [...resolver.sourceExts, 'svg'],
-  }
-
-  return config
-})()
+module.exports = config

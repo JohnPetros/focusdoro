@@ -1,10 +1,11 @@
-import { AlertDialog } from '@tamagui/alert-dialog'
-import { Button } from 'tamagui'
+import { useEffect } from "react"
+import { AlertDialog } from "@tamagui/alert-dialog"
+import { Button, XStack } from "tamagui"
 
 interface AlertProps {
   title: string
   description: string
-  onOpen: () => void
+  onCancel: () => void
   onConfirm: () => void
 }
 
@@ -14,12 +15,16 @@ export const AlertTrigger = AlertDialog.Trigger
 export function AlertContent({
   title,
   description,
-  onOpen,
+  onCancel,
   onConfirm,
 }: AlertProps) {
   function handleFocus() {
-    console.log('oi')
+    console.log("oi")
   }
+
+  useEffect(() => {
+    console.log("oi")
+  }, [])
 
   return (
     <AlertDialog.Portal>
@@ -35,7 +40,7 @@ export function AlertContent({
         elevate
         key="content"
         animation={[
-          'quick',
+          "quick",
           {
             opacity: {
               overshootClamping: true,
@@ -58,17 +63,32 @@ export function AlertContent({
         >
           {title}
         </AlertDialog.Title>
-        <AlertDialog.Description marginTop={16} color="$blue12">
+        <AlertDialog.Description color="$blue12">
           {description}
         </AlertDialog.Description>
-        <AlertDialog.Action asChild>
-          <Button onPress={onConfirm} bc="$red10">
-            Yes
-          </Button>
-        </AlertDialog.Action>
-        <AlertDialog.Cancel>
-          <Button bc="$blue8">Cancel</Button>
-        </AlertDialog.Cancel>
+        <XStack
+          gap={12}
+          mt={16}
+        >
+          <AlertDialog.Action asChild>
+            <Button
+              onPress={onConfirm}
+              bc="$red10"
+              flex={1}
+            >
+              Yes
+            </Button>
+          </AlertDialog.Action>
+          <AlertDialog.Cancel asChild>
+            <Button
+              bc="$blue8"
+              flex={1}
+              onPress={onCancel}
+            >
+              Cancel
+            </Button>
+          </AlertDialog.Cancel>
+        </XStack>
       </AlertDialog.Content>
     </AlertDialog.Portal>
   )
