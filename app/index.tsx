@@ -2,8 +2,9 @@ import { useCallback, useRef, useState } from "react"
 import { FlatList } from "react-native"
 import { Swipeable } from "react-native-gesture-handler"
 import uuid from "react-native-uuid"
+import { useToastController } from "@tamagui/toast"
 import { useFocusEffect, useRouter } from "expo-router"
-import { Play, Plus, Trash } from "phosphor-react-native"
+import { Play, Plus, SmileyXEyes, Trash } from "phosphor-react-native"
 import { useTheme } from "tamagui"
 import { Button, H2, XStack, YStack } from "tamagui"
 
@@ -20,9 +21,12 @@ export default function Home() {
   const theme = useTheme()
   const router = useRouter()
   const swipeableRefs = useRef<Swipeable[]>([])
+  const toast = useToastController()
 
-  function handleError(error: string) {
-    return null
+  function handleError(message: string) {
+    toast.show(message, {
+      icon: SmileyXEyes,
+    })
   }
 
   function handleTaskButton(taskId: string) {
@@ -35,7 +39,7 @@ export default function Home() {
 
   async function handleRemoveTaskButton(taskId: string) {
     try {
-      // storage.destroyTask(taskId)
+      storage.destroyTask(taskId)
     } catch (error) {
       console.error(error)
       handleError("Failed to remove task")
@@ -192,6 +196,7 @@ export default function Home() {
                 icon={Play}
                 isActive={item.isSelected}
                 onPress={() => handleTaskButton(item.id)}
+                label="play task's pomodoro"
               />
             </Swipeable>
           )}

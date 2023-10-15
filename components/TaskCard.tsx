@@ -10,6 +10,7 @@ interface TaskCardProps {
   totalSessions: number
   completedSessions: number
   icon: Icon
+  label?: string
   onPress: VoidFunction | null
 }
 
@@ -20,6 +21,7 @@ export function TaskCard({
   completedSessions,
   icon: Icon,
   onPress,
+  label,
 }: TaskCardProps) {
   const theme = useTheme()
 
@@ -70,6 +72,7 @@ export function TaskCard({
           />
         }
         onPress={onPress}
+        aria-label={label ? label : "no action"}
       />
     </XStack>
   )

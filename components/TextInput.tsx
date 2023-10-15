@@ -1,4 +1,4 @@
-import { Input, InputProps } from 'tamagui'
+import { Input, InputProps } from "tamagui"
 
 interface TextInputProps extends InputProps {}
 
@@ -9,7 +9,7 @@ export function TextInput({ ...rest }: TextInputProps) {
       bg="$colorTransparent"
       borderWidth={2}
       borderColor="$blue6"
-      focusStyle={{ borderColor: '$blue10', color: '$blue12' }}
+      focusStyle={{ borderColor: "$blue10", color: "$blue12" }}
       h={56}
       p={12}
       fontSize={16}

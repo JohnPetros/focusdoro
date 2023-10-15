@@ -64,6 +64,7 @@ export function NumberPicker({
         jc="center"
         gap={64}
         zIndex={100}
+        testID="number-picker"
       >
         <Label
           fontSize={16}
@@ -79,6 +80,7 @@ export function NumberPicker({
           <RoundButton
             shadowColor={theme.blue8.val}
             size="$5"
+            radius={24}
             bg="$blue10"
             icon={
               <ArrowUp
@@ -99,6 +101,7 @@ export function NumberPicker({
             shadowColor={theme.blue8.val}
             size="$5"
             bg="$blue10"
+            radius={24}
             icon={
               <ArrowDown
                 color={theme.blue12.val}
@@ -113,6 +116,7 @@ export function NumberPicker({
           shadowColor={theme.blue8.val}
           size="$5"
           bg="$blue10"
+          radius={24}
           icon={
             <Check
               color={theme.blue12.val}

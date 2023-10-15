@@ -1,5 +1,5 @@
-import { XStack, useTheme } from 'tamagui'
-import { Alarm } from 'phosphor-react-native'
+import { Alarm } from "phosphor-react-native"
+import { useTheme, View, XStack } from "tamagui"
 
 interface SessionCounterProps {
   totalAmount: number
@@ -14,18 +14,25 @@ export function SessionCounter({
 }: SessionCounterProps) {
   const theme = useTheme()
 
-  const color = isActive ? 'yellow11' : 'blue10'
+  const color = isActive ? "yellow11" : "blue10"
 
   return (
-    <XStack>
+    <XStack
+      testID={isActive ? "active" : "default"}
+      aria-label={`${completedAmount} out of ${totalAmount} tasks are completed`}
+    >
       {Array.from({ length: totalAmount }).map((_, index) => {
         const isFilled = index <= completedAmount - 1
         return (
-          <Alarm
+          <View
             key={String(index)}
-            weight={isFilled ? 'fill' : 'regular'}
-            color={theme[color].val}
-          />
+            testID={isFilled ? "filled" : "not-filled"}
+          >
+            <Alarm
+              weight={isFilled ? "fill" : "regular"}
+              color={theme[color].val}
+            />
+          </View>
         )
       })}
     </XStack>

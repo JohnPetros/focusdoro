@@ -38,6 +38,7 @@ export function NumberInput({
       <Button
         unstyled
         onPress={handleShowNumberPickerButton}
+        testID="number-input-trigger"
       >
         <Square
           bc="$blue4"
