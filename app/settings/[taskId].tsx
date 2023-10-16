@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { Dimensions } from "react-native"
+import { useToastController } from "@tamagui/toast"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { CaretLeft } from "phosphor-react-native"
+import { CaretLeft, SmileyXEyes } from "phosphor-react-native"
 import {
   Button as BackButton,
   H1,
@@ -28,8 +29,13 @@ export default function Settings() {
   const { taskId } = useLocalSearchParams()
   const theme = useTheme()
   const router = useRouter()
+  const toast = useToastController()
 
-  function handleError(error: string) {}
+  function handleError(message: string) {
+    toast.show(message, {
+      icon: SmileyXEyes,
+    })
+  }
 
   function updateTask(updatedTask: Task) {
     try {

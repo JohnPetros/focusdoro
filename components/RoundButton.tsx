@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react"
-import { LayoutChangeEvent } from "react-native"
 import { Shadow } from "react-native-shadow-2"
 import { Button, ButtonProps, useTheme } from "tamagui"
 

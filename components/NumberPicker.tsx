@@ -90,6 +90,7 @@ export function NumberPicker({
               />
             }
             onPress={handleIncreaseValueButton}
+            aria-label="Increase value"
           />
           <Text
             color="$blue12"
@@ -110,6 +111,7 @@ export function NumberPicker({
               />
             }
             onPress={handleDecreaseValueButton}
+            aria-label="Decrease value"
           />
         </XStack>
         <RoundButton
@@ -125,6 +127,7 @@ export function NumberPicker({
             />
           }
           onPress={handleConfirmButton}
+          aria-label="Confirm value"
         />
       </YStack>
     </Portal>

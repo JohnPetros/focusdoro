@@ -138,6 +138,7 @@ export default function Pomodoro() {
             }
             bc="$blue2"
             onPress={handleSettingsButton}
+            aria-label="Open task settings"
           />
           <RoundButton
             shadowColor={theme.blue12.val}
@@ -152,6 +153,7 @@ export default function Pomodoro() {
             }
             bc="$blue2"
             onPress={handleHomeButton}
+            aria-label="Go back to home"
           />
         </XStack>
       </Square>
@@ -189,6 +191,7 @@ export default function Pomodoro() {
             }
             bc="$blue10"
             onPress={handlePlayButton}
+            aria-label={`${isPaused ? "Play" : "Pause"} timer"`}
           />
 
           {isPaused && (
@@ -205,6 +208,7 @@ export default function Pomodoro() {
                 }
                 bc="$blue10"
                 onPress={handleResetSessionButton}
+                aria-label="Reset current session"
               />
               <RoundButton
                 shadowColor={theme.blue8.val}
@@ -217,6 +221,7 @@ export default function Pomodoro() {
                 }
                 bc="$blue10"
                 onPress={handleResetPomodoroButton}
+                aria-label="Reset pomodoro"
               />
             </XStack>
           )}
