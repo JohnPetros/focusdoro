@@ -46,7 +46,6 @@ export function NumberPicker({
   return (
     <Portal>
       <Square
-        opacity={0.8}
         bc="$blue1"
         position="absolute"
         ai="center"
@@ -55,6 +54,10 @@ export function NumberPicker({
         width="100%"
         gap={24}
         zIndex={50}
+        enterStyle={{ opacity: 0 }}
+        exitStyle={{ opacity: 0 }}
+        opacity={0.8}
+        animation="lazy"
       ></Square>
       <YStack
         position="absolute"
@@ -64,6 +67,10 @@ export function NumberPicker({
         jc="center"
         gap={64}
         zIndex={100}
+        enterStyle={{ opacity: 0 }}
+        exitStyle={{ opacity: 0 }}
+        opacity={1}
+        animation="lazy"
         testID="number-picker"
       >
         <Label
