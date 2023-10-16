@@ -1,5 +1,4 @@
 import { render } from "@testing-library/react-native"
-import { Play } from "phosphor-react-native"
 import { TamaguiProvider } from "tamagui"
 
 import { SessionCounter } from "../../components/SessionCounter"
