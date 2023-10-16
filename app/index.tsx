@@ -82,7 +82,6 @@ export default function Home() {
   async function fetchTasks() {
     try {
       const tasks = storage.getTasks()
-      console.log(tasks)
 
       if (tasks) setTasks(tasks)
     } catch (error) {
