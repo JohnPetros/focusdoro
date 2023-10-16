@@ -12,7 +12,6 @@ import {
   Canvas,
   Path,
   runTiming,
-  Shadow,
   Skia,
   useValue,
 } from "@shopify/react-native-skia"
@@ -21,13 +20,10 @@ import { HourglassHigh, Pause } from "phosphor-react-native"
 import { Square, Text, useTheme, YStack } from "tamagui"
 import { XStack } from "tamagui"
 
-import { SESSION_SECONDS, useTimerStore } from "../hooks/useTimerStore"
-// import { calculateRadius } from "../utils/calculateRadius"
+import { Task } from "../@types/task"
+import { useTimerStore } from "../hooks/useTimerStore"
+import { storage } from "../storage"
 import { convertSecondsToTime } from "../utils/convertSecondsToTime"
-
-// const RADIUS = calculateRadius(CIRCLE_LENGTH)
-// const OUTER_CIRCLE_RADIUS = calculateRadius(OUTER_CIRCLE_LENGTH)
-// const INNER_CIRCLE_RADIUS = calculateRadius(INNER_CIRCLE_LENGTH)
 
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 const AnimatedText = Animated.createAnimatedComponent(Text)
@@ -58,9 +54,10 @@ innerCirclePath.addCircle(
 
 interface TimerProps {
   canPlay: boolean
+  task: Task
 }
 
-export function Timer({ canPlay }: TimerProps) {
+export function Timer({ canPlay, task }: TimerProps) {
   const {
     state: {
       isPaused,
@@ -122,11 +119,12 @@ export function Timer({ canPlay }: TimerProps) {
 
     if (isSessionEnd && isLongBreak) {
       setIsLongBreak(false)
-      setSessionSeconds(SESSION_SECONDS)
-      setTotalSessionSeconds(SESSION_SECONDS)
+      setSessionSeconds(totalSessionSeconds)
+      setTotalSessionSeconds(totalSessionSeconds)
       setCompletedSessions(1)
 
-      showToast("New session for " + convertSecondsToTime(SESSION_SECONDS))
+      showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
+      storage.updateTask({ ...task, isLongBreak: false })
       return
     }
 
@@ -138,16 +136,18 @@ export function Timer({ canPlay }: TimerProps) {
       showToast(
         `Take a long break for ${convertSecondsToTime(longBreakSeconds)}`
       )
+      storage.updateTask({ ...task, isLongBreak: true })
       return
     }
 
     if (isSessionEnd && isBreak) {
       setIsBreak(false)
-      setSessionSeconds(SESSION_SECONDS)
-      setTotalSessionSeconds(SESSION_SECONDS)
+      setSessionSeconds(totalSessionSeconds)
+      setTotalSessionSeconds(totalSessionSeconds)
       setCompletedSessions(completedSessions + 1)
 
-      showToast("New session for " + convertSecondsToTime(SESSION_SECONDS))
+      showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
+      storage.updateTask({ ...task, isBreak: false })
       return
     }
 
@@ -157,10 +157,11 @@ export function Timer({ canPlay }: TimerProps) {
       setTotalSessionSeconds(breakSeconds)
 
       showToast(`Take a break for ${convertSecondsToTime(breakSeconds)}`)
+      storage.updateTask({ ...task, isBreak: true })
       return
     }
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       minutes.value = Math.floor(sessionSeconds / 60)
       seconds.value = sessionSeconds % 60
 
@@ -170,13 +171,19 @@ export function Timer({ canPlay }: TimerProps) {
         duration: 1000,
       })
     }, 1000)
+
+    return () => clearTimeout(timer)
   }, [sessionSeconds, isPaused, canPlay])
 
   useEffect(() => {
-    runTiming(progress, 1, {
-      duration: 500,
-    })
-  }, [])
+    if (!canPlay) {
+      minutes.value = 0
+      seconds.value = 0
+      runTiming(progress, 1, {
+        duration: 250,
+      })
+    }
+  }, [canPlay])
 
   return (
     <>
