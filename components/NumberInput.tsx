@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { BackHandler } from "react-native"
 import { Button, Square, Text, YStack } from "tamagui"
 
 import { NumberPicker } from "./NumberPicker"
@@ -33,6 +34,20 @@ export function NumberInput({
     onChange(value)
   }
 
+  function handleBackButton() {
+    setIsNumberPickerVisible((isVisible) => !isVisible)
+    return true
+  }
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackButton
+    )
+
+    return backHandler.remove
+  }, [isNumberPickerVisible])
+
   return (
     <>
       <Button
@@ -56,6 +71,7 @@ export function NumberInput({
             <Text
               fontSize={16}
               color="$blue10"
+              textAlign="center"
             >
               {label}
             </Text>
