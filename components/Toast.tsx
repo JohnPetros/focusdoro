@@ -27,6 +27,7 @@ export function Toast() {
       animation="bouncy"
       zIndex={150}
       backgroundColor="$blue5"
+      testID="toast"
     >
       <XStack
         ai="center"

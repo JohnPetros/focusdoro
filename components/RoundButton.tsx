@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react"
 import { Shadow } from "react-native-shadow-2"
 import { Button, ButtonProps, useTheme } from "tamagui"
 
@@ -26,6 +25,7 @@ export function RoundButton({
           opacity: 0.8,
           backgroundColor: theme.blue4.val,
         }}
+        testID="roundButton"
       />
     </Shadow>
   )
