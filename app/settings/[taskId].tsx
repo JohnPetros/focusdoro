@@ -6,6 +6,7 @@ import { CaretLeft, SmileyXEyes } from "phosphor-react-native"
 import {
   Button as BackButton,
   H1,
+  H2,
   Label,
   useTheme,
   XStack,
@@ -81,6 +82,15 @@ export default function Settings() {
     updateTask(updatedTask)
   }
 
+  function handleTotalSessionsNumberInputChange(value: number) {
+    const updatedTask: Task = {
+      ...task,
+      totalSessions: value,
+    }
+
+    updateTask(updatedTask)
+  }
+
   function handleTaskTitleInputChange(title: string) {
     setTaskTitle(title)
     const updatedTask: Task = {
@@ -148,36 +158,67 @@ export default function Settings() {
           />
         </YStack>
 
-        <XStack
-          ai="center"
-          gap={PADDING_BETWEEN}
+        <YStack
           mt={24}
+          alignItems="center"
         >
+          <H2
+            color="$blue12"
+            fontSize={16}
+          >
+            Durations
+          </H2>
+          <XStack
+            ai="center"
+            gap={PADDING_BETWEEN}
+          >
+            <NumberInput
+              minValue={1}
+              maxValue={60}
+              label="Session"
+              value={task.sessionMinutes}
+              width={INPUT_NUMBER_WIDTH}
+              onChange={handleSessionNumberInputChange}
+            />
+            <NumberInput
+              minValue={1}
+              maxValue={60}
+              label="Break"
+              value={task.breakMinutes}
+              width={INPUT_NUMBER_WIDTH}
+              onChange={handleBreakNumberInputChange}
+            />
+            <NumberInput
+              minValue={1}
+              maxValue={60}
+              label="Long break"
+              value={task.longBreakMinutes}
+              width={INPUT_NUMBER_WIDTH}
+              onChange={handleLongBreakNumberInputChange}
+            />
+          </XStack>
+        </YStack>
+
+        <YStack
+          mt={24}
+          alignItems="center"
+        >
+          <H2
+            color="$blue12"
+            fontSize={16}
+          >
+            Other preferences
+          </H2>
           <NumberInput
-            minValue={0}
-            maxValue={60}
-            label="Session"
-            value={task.sessionMinutes}
-            width={INPUT_NUMBER_WIDTH}
-            onChange={handleSessionNumberInputChange}
+            minValue={1}
+            maxValue={24}
+            label="Sessions amount"
+            unit="total"
+            value={task.totalSessions}
+            width={INPUT_NUMBER_WIDTH * 2}
+            onChange={handleTotalSessionsNumberInputChange}
           />
-          <NumberInput
-            minValue={0}
-            maxValue={60}
-            label="Break"
-            value={task.breakMinutes}
-            width={INPUT_NUMBER_WIDTH}
-            onChange={handleBreakNumberInputChange}
-          />
-          <NumberInput
-            minValue={0}
-            maxValue={60}
-            label="Long break"
-            value={task.longBreakMinutes}
-            width={INPUT_NUMBER_WIDTH}
-            onChange={handleLongBreakNumberInputChange}
-          />
-        </XStack>
+        </YStack>
         <XStack mt="auto">
           <Button onPress={handlePlayPomodoroButton}>Play Pomodoro</Button>
         </XStack>
