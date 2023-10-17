@@ -5,8 +5,7 @@ import uuid from "react-native-uuid"
 import { useToastController } from "@tamagui/toast"
 import { useFocusEffect, useRouter } from "expo-router"
 import { Play, Plus, SmileyXEyes, Trash } from "phosphor-react-native"
-import { useTheme } from "tamagui"
-import { Button, H2, XStack, YStack } from "tamagui"
+import { Button, H2, useTheme, View, XStack, YStack } from "tamagui"
 
 import type { Task } from "../@types/task"
 import { AlertContent, AlertRoot, AlertTrigger } from "../components/Alert"
@@ -106,25 +105,27 @@ export default function Home() {
         jc="space-between"
       >
         <TextInput
-          w="85%"
+          w="80%"
           placeholder="What are you working on?"
           value={newTaskTitle}
           onChangeText={setNewTaskTitle}
         />
 
-        <RoundButton
-          shadowColor={theme.blue8.val}
-          radius={24}
-          bg="$blue10"
-          icon={
-            <Plus
-              color={theme.blue12.val}
-              size={24}
-              weight="bold"
-            />
-          }
-          onPress={handleNewTaskButton}
-        />
+        <View mr={8}>
+          <RoundButton
+            shadowColor={theme.blue8.val}
+            radius={24}
+            bg="$blue10"
+            icon={
+              <Plus
+                color={theme.blue12.val}
+                size={24}
+                weight="bold"
+              />
+            }
+            onPress={handleNewTaskButton}
+          />
+        </View>
       </XStack>
       <H2
         fontSize={16}
