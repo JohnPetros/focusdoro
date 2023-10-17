@@ -21,7 +21,7 @@ export function Checkbox({
   onCheck,
 }: CheckboxProps) {
   const theme = useTheme()
-  const color = isChecked ? "blue10" : "blue7"
+  const color = isChecked ? "blue10" : "blue8"
 
   function handleCheck() {
     onCheck(value)
