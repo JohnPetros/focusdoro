@@ -1,20 +1,10 @@
-import { useRef } from "react"
 import { Check, Icon, X } from "phosphor-react-native"
-import {
-  Button,
-  ButtonProps,
-  Checkbox as C,
-  Label,
-  TamaguiComponent,
-  useTheme,
-  View,
-  XStack,
-  YStack,
-} from "tamagui"
+import { Checkbox as C, Label, useTheme, View, XStack, YStack } from "tamagui"
 
 interface CheckboxProps {
   id: string
   label: string
+  value: string
   width: number
   isChecked: boolean
   icon: Icon
@@ -24,21 +14,17 @@ interface CheckboxProps {
 export function Checkbox({
   id,
   label,
+  value,
   width,
   isChecked,
   icon: Icon,
   onCheck,
 }: CheckboxProps) {
   const theme = useTheme()
-  const checkboxRef = useRef<TamaguiComponent | null>(null)
   const color = isChecked ? "blue10" : "blue7"
 
   function handleCheck() {
-    onCheck(id)
-  }
-
-  function handleCheckboxPress() {
-    checkboxRef.current?.p
+    onCheck(value)
   }
 
   return (
@@ -51,12 +37,13 @@ export function Checkbox({
       pt={12}
       w={width}
       h="auto"
-      bg="$blue2"
-      onPress={handleCheckboxPress}
+      bg="$blue4"
+      accessible={true}
     >
       <YStack
         alignItems="center"
         justifyContent="center"
+        zIndex={-5}
       >
         <View
           w={32}
