@@ -9,8 +9,6 @@ export const tasks = (storage: MMKV): TasksStorage => ({
   getTask(id: string): Task {
     const tasks = storage.getString(TASKS_KEY)
 
-    console.log(tasks)
-
     return JSON.parse(tasks).find((task: Task) => task.id === id)
   },
 
