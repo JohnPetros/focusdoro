@@ -1,5 +1,5 @@
 const PREFIX = "@focusdoro"
 const TASKS_KEY = `${PREFIX}:tasks`
-const SELECTED_TASK = `${PREFIX}:selected_task`
+const AUDIO_KEY = `${PREFIX}:audio`
 
-export { SELECTED_TASK, TASKS_KEY }
+export { AUDIO_KEY, TASKS_KEY }
