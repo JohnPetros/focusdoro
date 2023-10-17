@@ -23,8 +23,8 @@ export const audios: Audio[] = [
     icon: Tree,
   },
   {
-    title: "coffee",
-    file: `${BASE_URL}/coffee.mp3`,
+    title: "cafe",
+    file: `${BASE_URL}/cafe.mp3`,
     icon: Coffee,
   },
   {
