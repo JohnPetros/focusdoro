@@ -19,6 +19,7 @@
       }
     },
     "plugins": [
+        "expo-av",
       [
         "expo-build-properties",
         {
