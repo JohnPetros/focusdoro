@@ -9,6 +9,7 @@ type BackgroundAudioContextValue = {
   play: (isLooping?: boolean) => Promise<void>
   stop: () => Promise<void>
   audio: string
+  isLoaded: boolean
 }
 
 export const BackgroundAudioContext = createContext(
@@ -24,15 +25,23 @@ export function BackgroundAudioProvider({
 }: BackgroundAudioProviderProps) {
   const { play, stop, loadAudioUri } = useAudio()
   const [audio, setAudio] = useState("")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   function storeAudio(audio: string) {
     setAudio(audio)
     storage.setAudio(audio)
   }
 
-  useEffect(() => {
+  async function loadAudio() {
     const audio = storage.getAudio()
     setAudio(audio)
+
+    const isLoaded = await loadAudioUri(audio)
+    setIsLoaded(isLoaded)
+  }
+
+  useEffect(() => {
+    loadAudio()
   }, [])
 
   return (
@@ -43,6 +52,7 @@ export function BackgroundAudioProvider({
         loadAudioUri,
         storeAudio,
         audio,
+        isLoaded,
       }}
     >
       {children}

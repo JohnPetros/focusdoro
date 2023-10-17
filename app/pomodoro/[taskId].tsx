@@ -1,5 +1,10 @@
-import { useCallback, useState } from "react"
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
+import { useCallback, useEffect, useState } from "react"
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router"
 import {
   ClockCounterClockwise,
   Gear,
@@ -51,11 +56,12 @@ export default function Pomodoro() {
     },
   } = useTimerStore()
   const { taskId } = useLocalSearchParams()
-  const [canPlay, setCanPlay] = useState(false)
+  const [canPlayTimer, setCanPlayTimer] = useState(false)
   const [task, setTask] = useState<Task>(null)
   const [isAudioModalOpen, setIsAudioModalOpen] = useState(false)
-  const { stop } = useBackgroundAudio()
+  const { stop, play, isLoaded } = useBackgroundAudio()
   const router = useRouter()
+  const navigation = useNavigation()
   const theme = useTheme()
 
   function handleSettingsButton() {
@@ -67,7 +73,7 @@ export default function Pomodoro() {
   }
 
   function handlePlayButton() {
-    setIsPaused(!isPaused)
+    if (isLoaded) setIsPaused(!isPaused)
   }
 
   function handleResetSessionButton() {
@@ -105,8 +111,7 @@ export default function Pomodoro() {
         setTotalSessionSeconds(sessionSeconds)
 
         setTimeout(() => {
-          setCanPlay(true)
-          setIsPaused(false)
+          setCanPlayTimer(true)
         }, 1000)
       }
     } catch (error) {
@@ -119,16 +124,42 @@ export default function Pomodoro() {
     setIsAudioModalOpen(true)
   }
 
-  async function handleAudioModalChange(isModalOpen: boolean) {
-    if (isModalOpen) await stop()
+  async function handleScreenBlur() {
+    setCanPlayTimer(false)
+    setIsPaused(true)
+    stop()
   }
 
   useFocusEffect(
     useCallback(() => {
-      setCanPlay(false)
+      setCanPlayTimer(false)
       fetchTask()
     }, [])
   )
+
+  useEffect(() => {
+    if (isAudioModalOpen) {
+      setIsPaused(true)
+      stop()
+      return
+    }
+    setIsPaused(false)
+  }, [isAudioModalOpen])
+
+  useEffect(() => {
+    if (canPlayTimer && isLoaded && !isPaused) {
+      play()
+      setIsPaused(false)
+    } else if (isLoaded && isPaused) {
+      stop()
+    }
+  }, [canPlayTimer, isLoaded, isPaused])
+
+  useEffect(() => {
+    navigation.addListener("blur", () => handleScreenBlur())
+
+    return () => navigation.removeListener("blur", () => handleScreenBlur())
+  }, [navigation])
 
   return (
     <YStack
@@ -192,10 +223,7 @@ export default function Pomodoro() {
               onPress={handleHomeButton}
               aria-label="Go back to home"
             />
-            <AudioModal
-              open={isAudioModalOpen}
-              onOpenChange={handleAudioModalChange}
-            >
+            <AudioModal open={isAudioModalOpen}>
               <AudioModalTrigger asChild>
                 <RoundButton
                   shadowColor={theme.blue12.val}
@@ -227,7 +255,7 @@ export default function Pomodoro() {
         position="relative"
       >
         <Timer
-          canPlay={canPlay}
+          canPlay={canPlayTimer}
           task={task}
         />
 

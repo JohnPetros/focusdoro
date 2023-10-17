@@ -38,14 +38,15 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
   async function handleAudioCheckboxChange(audioFile: string) {
     setSelectedAudioFile(audioFile)
     storeAudio(audioFile)
+    setIsAudioLoaded(false)
   }
 
   async function handlePlayAudio() {
     try {
-      setIsAudioLoaded(false)
       setIsAudioLoading(true)
 
       const isLoaded = await loadAudioUri(selectedAudioFile)
+
       setIsAudioLoaded(isLoaded)
     } catch (error) {
       console.error(error)
@@ -56,7 +57,6 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
 
   useEffect(() => {
     if (isAudioLoaded) {
-      play()
       close()
     }
   }, [isAudioLoaded])
@@ -73,7 +73,7 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
           backgroundColor="$blue2"
         />
         <Dialog.Content
-          forceMount
+          forceMount={true}
           bordered
           elevate
           key="content"
@@ -95,10 +95,8 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Dialog.Title fontSize={20}>
-              Play background sound during session
-            </Dialog.Title>
-            <Dialog.Close asChild>
+            <Dialog.Title fontSize={18}>Play sound during session</Dialog.Title>
+            <Dialog.Close>
               <RoundButton
                 shadowColor={theme.blue8.val}
                 size="$2"
@@ -111,7 +109,8 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
                 }
                 bg="$blue10"
                 aria-label="Close modal"
-                onPress={close}
+                onPress={handlePlayAudio}
+                disabled={isAudioLoading}
               />
             </Dialog.Close>
           </XStack>
@@ -136,10 +135,7 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
               />
             ))}
           </XStack>
-          <Dialog.Close
-            asChild
-            mt={24}
-          >
+          <Dialog.Close mt={24}>
             <Button
               disabled={isAudioLoading}
               onPress={handlePlayAudio}

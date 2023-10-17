@@ -7,25 +7,30 @@ export function useAudio() {
   const [sound, setSound] = useState<Sound>(null)
 
   async function loadAudioUri(uri: string) {
-    await stop()
-    const sound = new Audio.Sound()
+    if (sound) {
+      await sound.unloadAsync()
+    }
 
-    await sound.loadAsync({
+    const newSound = new Audio.Sound()
+
+    await newSound.loadAsync({
       uri,
     })
 
-    setSound(sound)
+    setSound(newSound)
 
-    return sound._loaded
+    return newSound._loaded
   }
 
   async function stop() {
     if (sound?._loaded) {
-      await Promise.all([sound.stopAsync(), sound.unloadAsync()])
+      await Promise.all([sound.stopAsync()])
     }
   }
 
   async function play(isLooping = true) {
+    console.log(sound?._loaded)
+
     if (sound?._loaded)
       await Promise.all([
         sound.setIsLoopingAsync(isLooping),
