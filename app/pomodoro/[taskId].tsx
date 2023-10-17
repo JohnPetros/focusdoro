@@ -4,6 +4,7 @@ import {
   ClockCounterClockwise,
   Gear,
   House,
+  MusicNotes,
   Pause,
   Play,
   Square as Reset,
@@ -11,10 +12,17 @@ import {
 import { BookOpen } from "phosphor-react-native"
 import { Square, useTheme, XStack, YStack } from "tamagui"
 
+import { Task } from "../../@types/task"
+import {
+  AudioModal,
+  AudioModalContent,
+  AudioModalTrigger,
+} from "../../components/AudioModal"
 import { RoundButton } from "../../components/RoundButton"
 import { TaskCard } from "../../components/TaskCard"
 import { Timer } from "../../components/Timer"
-import { SESSION_SECONDS, useTimerStore } from "../../hooks/useTimerStore"
+import { useBackgroundAudio } from "../../hooks/useBackgroundAudio"
+import { useTimerStore } from "../../hooks/useTimerStore"
 import { storage } from "../../storage"
 import { convertMinutesToSeconds } from "../../utils/convertMinutesToSeconds"
 
@@ -26,8 +34,10 @@ export default function Pomodoro() {
       isLongBreak,
       totalSessions,
       completedSessions,
+      sessionSeconds,
       totalSessionSeconds,
-      taskTitle,
+      breakSeconds,
+      longBreakSeconds,
     },
     action: {
       setIsPaused,
@@ -38,13 +48,14 @@ export default function Pomodoro() {
       setTotalSessionSeconds,
       setTotalSessions,
       setCompletedSessions,
-      setTaskTitle,
     },
   } = useTimerStore()
   const { taskId } = useLocalSearchParams()
   const [canPlay, setCanPlay] = useState(false)
+  const [task, setTask] = useState<Task>(null)
+  const [isAudioModalOpen, setIsAudioModalOpen] = useState(false)
+  const { stop } = useBackgroundAudio()
   const router = useRouter()
-
   const theme = useTheme()
 
   function handleSettingsButton() {
@@ -69,7 +80,7 @@ export default function Pomodoro() {
     setIsBreak(false)
     setIsLongBreak(false)
 
-    setSessionSeconds(SESSION_SECONDS)
+    setSessionSeconds(sessionSeconds)
     setCompletedSessions(1)
   }
 
@@ -78,22 +89,43 @@ export default function Pomodoro() {
       const task = storage.getTask(String(taskId))
 
       if (task) {
+        setTask(task)
+
         setTotalSessions(task.totalSessions)
         setCompletedSessions(task.completedSessions)
         setBreakSeconds(convertMinutesToSeconds(task.breakMinutes))
-        setSessionSeconds(convertMinutesToSeconds(task.sessionMinutes))
-        setTotalSessionSeconds(convertMinutesToSeconds(task.sessionMinutes))
-        setTaskTitle(task.title)
 
-        setCanPlay(true)
+        const sessionSeconds = task.isBreak
+          ? breakSeconds
+          : task.isLongBreak
+          ? longBreakSeconds
+          : convertMinutesToSeconds(task.sessionMinutes)
+
+        setSessionSeconds(sessionSeconds)
+        setTotalSessionSeconds(sessionSeconds)
+
+        setTimeout(() => {
+          setCanPlay(true)
+          setIsPaused(false)
+        }, 1000)
       }
     } catch (error) {
       console.error(error)
+      router.push("/")
     }
+  }
+
+  function handleAudioModal() {
+    setIsAudioModalOpen(true)
+  }
+
+  async function handleAudioModalChange(isModalOpen: boolean) {
+    if (isModalOpen) await stop()
   }
 
   useFocusEffect(
     useCallback(() => {
+      setCanPlay(false)
       fetchTask()
     }, [])
   )
@@ -109,53 +141,83 @@ export default function Pomodoro() {
         ai="center"
       >
         <TaskCard
-          title={taskTitle}
+          title={task?.title}
           isActive={!isPaused && !isBreak}
           totalSessions={totalSessions}
           completedSessions={completedSessions}
           icon={BookOpen}
           onPress={null}
         />
-        <XStack
-          w="100%"
-          mt={20}
-          mr={20}
-          ai="center"
-          jc="flex-end"
-          gap={16}
-          zIndex={50}
-        >
-          <RoundButton
-            shadowColor={theme.blue12.val}
-            size="$2"
-            radius={18}
-            icon={
-              <Gear
-                color={theme.blue12.val}
-                size={16}
-                weight="bold"
-              />
-            }
-            bc="$blue2"
-            onPress={handleSettingsButton}
-            aria-label="Open task settings"
-          />
-          <RoundButton
-            shadowColor={theme.blue12.val}
-            size="$2"
-            radius={18}
-            icon={
-              <House
-                color={theme.blue12.val}
-                size={16}
-                weight="bold"
-              />
-            }
-            bc="$blue2"
-            onPress={handleHomeButton}
-            aria-label="Go back to home"
-          />
-        </XStack>
+        {isPaused && (
+          <XStack
+            w="100%"
+            mt={20}
+            mr={20}
+            ai="center"
+            jc="flex-end"
+            gap={20}
+            zIndex={50}
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+            opacity={1}
+            animation="lazy"
+          >
+            <RoundButton
+              shadowColor={theme.blue12.val}
+              size="$2"
+              radius={18}
+              icon={
+                <Gear
+                  color={theme.blue12.val}
+                  size={16}
+                  weight="bold"
+                />
+              }
+              bc="$blue2"
+              onPress={handleSettingsButton}
+              aria-label="Open task settings"
+            />
+            <RoundButton
+              shadowColor={theme.blue12.val}
+              size="$2"
+              radius={18}
+              icon={
+                <House
+                  color={theme.blue12.val}
+                  size={16}
+                  weight="bold"
+                />
+              }
+              bc="$blue2"
+              onPress={handleHomeButton}
+              aria-label="Go back to home"
+            />
+            <AudioModal
+              open={isAudioModalOpen}
+              onOpenChange={handleAudioModalChange}
+            >
+              <AudioModalTrigger asChild>
+                <RoundButton
+                  shadowColor={theme.blue12.val}
+                  size="$2"
+                  radius={18}
+                  icon={
+                    <MusicNotes
+                      color={theme.blue12.val}
+                      size={16}
+                      weight="bold"
+                    />
+                  }
+                  bc="$blue2"
+                  onPress={handleAudioModal}
+                  aria-label="Open audio modal"
+                />
+              </AudioModalTrigger>
+
+              <AudioModalContent setIsModalOpen={setIsAudioModalOpen} />
+            </AudioModal>
+          </XStack>
+        )}
       </Square>
 
       <YStack
@@ -164,7 +226,10 @@ export default function Pomodoro() {
         jc="center"
         position="relative"
       >
-        <Timer canPlay={canPlay} />
+        <Timer
+          canPlay={canPlay}
+          task={task}
+        />
 
         <YStack
           position="absolute"
@@ -198,7 +263,7 @@ export default function Pomodoro() {
             <XStack gap={64}>
               <RoundButton
                 shadowColor={theme.blue8.val}
-                size="$5"
+                size="$4"
                 radius={28}
                 icon={
                   <ClockCounterClockwise
@@ -212,6 +277,7 @@ export default function Pomodoro() {
               />
               <RoundButton
                 shadowColor={theme.blue8.val}
+                size="$4"
                 radius={28}
                 icon={
                   <Reset
