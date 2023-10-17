@@ -7,6 +7,7 @@ import { SplashScreen, Stack } from "expo-router"
 import { Text, Theme, YStack } from "tamagui"
 
 import { StyledSafeAreaView } from "../components/StyledSafeAreaView"
+import { BackgroundAudioProvider } from "../contexts/BackgroundAudioContext"
 import { TamaguiProvider } from "../providers/TamaguiProvider"
 import { ToastProvider } from "../providers/ToastProvider"
 
@@ -34,22 +35,24 @@ export default function Layout() {
             <PortalProvider>
               <StyledSafeAreaView>
                 <ToastProvider>
-                  <StatusBar
-                    barStyle="light-content"
-                    backgroundColor="transparent"
-                    translucent
-                  />
-                  <YStack
-                    flex={1}
-                    bg="$blue2"
-                    p={24}
-                  >
-                    <Stack
-                      screenOptions={{
-                        headerShown: false,
-                      }}
+                  <BackgroundAudioProvider>
+                    <StatusBar
+                      barStyle="light-content"
+                      backgroundColor="transparent"
+                      translucent
                     />
-                  </YStack>
+                    <YStack
+                      flex={1}
+                      bg="$blue2"
+                      p={24}
+                    >
+                      <Stack
+                        screenOptions={{
+                          headerShown: false,
+                        }}
+                      />
+                    </YStack>
+                  </BackgroundAudioProvider>
                 </ToastProvider>
               </StyledSafeAreaView>
             </PortalProvider>
