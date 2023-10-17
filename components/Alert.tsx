@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { AlertDialog } from "@tamagui/alert-dialog"
 import { Button, XStack } from "tamagui"
 
@@ -18,22 +17,14 @@ export function AlertContent({
   onCancel,
   onConfirm,
 }: AlertProps) {
-  function handleFocus() {
-    console.log("oi")
-  }
-
-  useEffect(() => {
-    console.log("oi")
-  }, [])
-
   return (
     <AlertDialog.Portal>
       <AlertDialog.Overlay
         key="overlay"
         animation="quick"
-        opacity={0.5}
         enterStyle={{ opacity: 0 }}
         exitStyle={{ opacity: 0 }}
+        opacity={0.5}
       />
       <AlertDialog.Content
         bordered
@@ -53,8 +44,7 @@ export function AlertContent({
         opacity={1}
         x={0}
         y={0}
-        onFocus={handleFocus}
-        // backgroundColor="$blue10"
+        backgroundColor="$blue2"
       >
         <AlertDialog.Title
           fontSize={16}
