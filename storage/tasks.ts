@@ -41,6 +41,7 @@ export const tasks = (storage: MMKV): TasksStorage => ({
   },
 
   updateTask(task: Task): void {
-    Promise.all([this.destroyTask(task.id), this.createTask(task)])
+    this.destroyTask(task.id)
+    this.createTask(task)
   },
 })
