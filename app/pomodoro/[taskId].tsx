@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
   useFocusEffect,
   useLocalSearchParams,
@@ -26,12 +26,11 @@ import {
 import { RoundButton } from "../../components/RoundButton"
 import { TaskCard } from "../../components/TaskCard"
 import { Timer } from "../../components/Timer"
+import { TimerNotification } from "../../components/TimerNotification"
 import { useBackgroundAudio } from "../../hooks/useBackgroundAudio"
 import { useTimerStore } from "../../hooks/useTimerStore"
-import { useNotification } from "../../services/notification"
 import { storage } from "../../storage"
 import { convertMinutesToSeconds } from "../../utils/convertMinutesToSeconds"
-import { TIMER_NOTIFICATIONS_ACTIONS } from "../../utils/timer-notifications-actions"
 
 export default function Pomodoro() {
   const {
@@ -64,9 +63,7 @@ export default function Pomodoro() {
   const { stop, play, isLoaded } = useBackgroundAudio()
   const router = useRouter()
   const navigation = useNavigation()
-  const notificationId = useRef("")
   const theme = useTheme()
-  const notification = useNotification()
 
   function handleSettingsButton() {
     router.push("/settings/" + taskId)
@@ -92,38 +89,6 @@ export default function Pomodoro() {
 
     setSessionSeconds(sessionSeconds)
     setCompletedSessions(1)
-  }
-
-  async function displayTimerNotification() {
-    try {
-      await notification.displayTimer(String(taskId))
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  async function updateTimerNotification() {
-    const sessionStatus = isBreak
-      ? "break"
-      : isLongBreak
-      ? "long break"
-      : "session"
-
-    const timerStatus = isPaused ? "paused" : "running"
-
-    const actions = isPaused
-      ? TIMER_NOTIFICATIONS_ACTIONS.paused
-      : TIMER_NOTIFICATIONS_ACTIONS.running
-
-    try {
-      await notification.updateTimer({
-        title: `${sessionStatus} - ${timerStatus}`,
-        progress: 10 - Math.floor((sessionSeconds / totalSessionSeconds) * 10),
-        actions,
-      })
-    } catch (error) {
-      console.error(error)
-    }
   }
 
   function fetchTask() {
@@ -190,14 +155,6 @@ export default function Pomodoro() {
       stop()
     }
   }, [isTimerLoaded, isLoaded, isPaused, isBreak, isLongBreak])
-
-  useEffect(() => {
-    displayTimerNotification()
-  }, [])
-
-  useEffect(() => {
-    updateTimerNotification()
-  }, [sessionSeconds, isPaused, isLongBreak, isBreak])
 
   useEffect(() => {
     navigation.addListener("blur", () => handleScreenBlur())
@@ -302,6 +259,7 @@ export default function Pomodoro() {
           isLoaded={isTimerLoaded}
           task={task}
         />
+        <TimerNotification taskId={String(taskId)} />
 
         <YStack
           position="absolute"
