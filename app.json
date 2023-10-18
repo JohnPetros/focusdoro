@@ -7,7 +7,7 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain"
     },
-    "icon": "./assets/icon.png",
+    "icon": "./assets/favicon.png",
     "name": "focusdoro",
     "slug": "focusdoro",
     "android": {
