@@ -1,6 +1,6 @@
 import { Task } from "../../@types/task"
 
-export interface TasksStorage {
+export interface ITasksStorage {
   getTask(taskId: string): Task
   getTasks(): Task[] | null
   createTask(task: Task): void

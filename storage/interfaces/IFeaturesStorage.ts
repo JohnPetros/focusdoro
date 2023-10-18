@@ -1,6 +1,6 @@
 import { Feature } from "../../@types/feature"
 
-export interface FeaturesStorage {
+export interface IFeaturesStorage {
   getFeatures(): Feature[]
   getFeatureByTitle(featureTitle: string): Feature
   updateFeature(updatedFeature: Feature): void

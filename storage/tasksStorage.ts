@@ -2,10 +2,10 @@ import { MMKV } from "react-native-mmkv"
 
 import type { Task } from "../@types/task"
 
-import { TasksStorage } from "./interfaces/tasksStorage"
+import { ITasksStorage } from "./interfaces/ITasksStorage"
 import { TASKS_KEY } from "./keys"
 
-export const tasks = (storage: MMKV): TasksStorage => ({
+export const tasksStorage = (storage: MMKV): ITasksStorage => ({
   getTask(id: string): Task {
     const tasks = storage.getString(TASKS_KEY)
 

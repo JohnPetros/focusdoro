@@ -1,9 +1,9 @@
 import { MMKV } from "react-native-mmkv"
 
-import { AudioStorage } from "./interfaces/audioStorage"
+import { IAudioStorage } from "./interfaces/IAudioStorage"
 import { AUDIO_KEY } from "./keys"
 
-export const audio = (storage: MMKV): AudioStorage => ({
+export const audioStorage = (storage: MMKV): IAudioStorage => ({
   getAudio() {
     return storage.getString(AUDIO_KEY)
   },

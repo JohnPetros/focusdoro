@@ -1,13 +1,13 @@
 import { MMKV } from "react-native-mmkv"
 
-import { audio } from "./audio"
-import { features } from "./features"
-import { tasks } from "./tasks"
+import { audioStorage } from "./audioStorage"
+import { featuresStorage } from "./featuresStorage"
+import { tasksStorage } from "./tasksStorage"
 
 const mmkvStorage = new MMKV({ id: "focusdoro" })
 
 export const storage = {
-  ...features(mmkvStorage),
-  ...tasks(mmkvStorage),
-  ...audio(mmkvStorage),
+  ...featuresStorage(mmkvStorage),
+  ...tasksStorage(mmkvStorage),
+  ...audioStorage(mmkvStorage),
 }

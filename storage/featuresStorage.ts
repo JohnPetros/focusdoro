@@ -2,10 +2,10 @@ import { MMKV } from "react-native-mmkv"
 
 import { Feature } from "../@types/feature"
 
-import { FeaturesStorage } from "./interfaces/featuresStorage"
+import { IFeaturesStorage } from "./interfaces/IFeaturesStorage"
 import { FEATURES_KEY } from "./keys"
 
-export const features = (storage: MMKV): FeaturesStorage => ({
+export const featuresStorage = (storage: MMKV): IFeaturesStorage => ({
   setFeatures(features: Feature[]) {
     storage.set(FEATURES_KEY, JSON.stringify(features))
   },
