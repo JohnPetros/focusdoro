@@ -1,8 +1,11 @@
-interface displayTimerParams {
-  title: string
-  taskId: string
-}
+import { TimerNotificationAction } from "../../../@types/timer-notification-action"
 
+interface UpdateTimerParams {
+  title: string
+  progress: number
+  actions: TimerNotificationAction[]
+}
 export interface ITimerNotification {
-  displayTimer({ title }: displayTimerParams): Promise<string>
+  displayTimer(taskId: string): Promise<void>
+  updateTimer({ title, actions }: UpdateTimerParams): Promise<void>
 }
