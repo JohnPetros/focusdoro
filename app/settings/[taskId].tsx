@@ -211,7 +211,7 @@ export default function Settings() {
           </H2>
           <NumberInput
             minValue={1}
-            maxValue={24}
+            maxValue={8}
             label="Sessions amount"
             unit="total"
             value={task.totalSessions}
