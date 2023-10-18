@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@gorhom/portal": "^1.0.14",
+    "@notifee/react-native": "^7.8.0",
     "@shopify/react-native-skia": "0.1.196",
     "@tamagui/alert-dialog": "^1.74.17",
     "@tamagui/animations-react-native": "^1.74.15",
