@@ -20,6 +20,7 @@
     },
     "plugins": [
         "expo-av",
+        "@notifee/react-native",
       [
         "expo-build-properties",
         {
