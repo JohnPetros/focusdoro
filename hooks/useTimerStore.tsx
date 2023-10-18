@@ -42,6 +42,7 @@ export const useTimerStore = create<StoreProps>((set) => ({
     isPaused: false,
     isBreak: false,
     isLongBreak: false,
+    shouldReset: false,
   },
   action: {
     setIsPaused: (isPaused: boolean) =>
