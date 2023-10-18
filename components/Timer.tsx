@@ -71,6 +71,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
       totalSessionSeconds,
       totalSessions,
       completedSessions,
+      shouldReset,
     },
     action: {
       setSessionSeconds,
@@ -78,9 +79,9 @@ export function Timer({ isLoaded, task }: TimerProps) {
       setIsLongBreak,
       setTotalSessionSeconds,
       setCompletedSessions,
+      setShouldReset,
     },
   } = useTimerStore()
-  const [shouldReset, setShouldReset] = useState(false)
 
   const progress = useValue(0)
   const minutes = useSharedValue(isLoaded ? sessionSeconds / 60 : 0)
@@ -117,6 +118,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
     runTiming(progress, 1, {
       duration: 250,
     })
+    setSessionSeconds(totalSessionSeconds)
   }
 
   function showToast(message: string) {

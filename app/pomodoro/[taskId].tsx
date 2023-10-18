@@ -54,6 +54,7 @@ export default function Pomodoro() {
       setTotalSessionSeconds,
       setTotalSessions,
       setCompletedSessions,
+      setShouldReset,
     },
   } = useTimerStore()
   const { taskId } = useLocalSearchParams()
@@ -78,8 +79,8 @@ export default function Pomodoro() {
   }
 
   function handleResetSessionButton() {
+    setShouldReset(true)
     setIsPaused(false)
-    setSessionSeconds(totalSessionSeconds)
   }
 
   function handleResetPomodoroButton() {
