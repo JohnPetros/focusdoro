@@ -8,4 +8,5 @@ interface UpdateTimerParams {
 export interface ITimerNotification {
   displayTimer(taskId: string): Promise<void>
   updateTimer({ title, actions }: UpdateTimerParams): Promise<void>
+  cancelTimer(): Promise<void>
 }

@@ -126,7 +126,7 @@ export default function Pomodoro() {
     setIsAudioModalOpen(true)
   }
 
-  async function handleScreenBlur() {
+  function handleScreenBlur() {
     setIsTimerLoaded(false)
     setIsPaused(true)
     stop()

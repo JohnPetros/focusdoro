@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { useNavigation } from "expo-router/src/useNavigation"
 
 import { useTimerStore } from "../hooks/useTimerStore"
 import { useNotification } from "../services/notification"
@@ -19,6 +20,7 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
     },
   } = useTimerStore()
   const notification = useNotification()
+  const navigation = useNavigation()
 
   async function displayTimerNotification() {
     try {
@@ -52,6 +54,10 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
     }
   }
 
+  async function handleScreenBlur() {
+    await notification.cancelTimer()
+  }
+
   useEffect(() => {
     displayTimerNotification()
   }, [])
@@ -59,6 +65,12 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
   useEffect(() => {
     updateTimerNotification()
   }, [sessionSeconds, isPaused, isLongBreak, isBreak])
+
+  useEffect(() => {
+    navigation.addListener("blur", () => handleScreenBlur())
+
+    return () => navigation.removeListener("blur", () => handleScreenBlur())
+  }, [navigation])
 
   return <></>
 }

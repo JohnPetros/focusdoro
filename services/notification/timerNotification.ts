@@ -64,5 +64,9 @@ export function timerNotification(): ITimerNotification {
           },
         })
     },
+
+    async cancelTimer() {
+      if (timerId.current) await notifee.cancelNotification(timerId.current)
+    },
   }
 }
