@@ -56,7 +56,7 @@ export default function Pomodoro() {
     },
   } = useTimerStore()
   const { taskId } = useLocalSearchParams()
-  const [canPlayTimer, setCanPlayTimer] = useState(false)
+  const [isTimerLoaded, setIsTimerLoaded] = useState(false)
   const [task, setTask] = useState<Task>(null)
   const [isAudioModalOpen, setIsAudioModalOpen] = useState(false)
   const { stop, play, isLoaded } = useBackgroundAudio()
@@ -111,7 +111,7 @@ export default function Pomodoro() {
         setTotalSessionSeconds(sessionSeconds)
 
         setTimeout(() => {
-          setCanPlayTimer(true)
+          setIsTimerLoaded(true)
         }, 1000)
       }
     } catch (error) {
@@ -125,14 +125,14 @@ export default function Pomodoro() {
   }
 
   async function handleScreenBlur() {
-    setCanPlayTimer(false)
+    setIsTimerLoaded(false)
     setIsPaused(true)
     stop()
   }
 
   useFocusEffect(
     useCallback(() => {
-      setCanPlayTimer(false)
+      setIsTimerLoaded(false)
       fetchTask()
     }, [])
   )
@@ -147,13 +147,13 @@ export default function Pomodoro() {
   }, [isAudioModalOpen])
 
   useEffect(() => {
-    if (canPlayTimer && isLoaded && !isPaused) {
+    if (isTimerLoaded && isLoaded && !isPaused && !isBreak && !isLongBreak) {
       play()
       setIsPaused(false)
     } else if (isLoaded && isPaused) {
       stop()
     }
-  }, [canPlayTimer, isLoaded, isPaused])
+  }, [isTimerLoaded, isLoaded, isPaused, isBreak, isLongBreak])
 
   useEffect(() => {
     navigation.addListener("blur", () => handleScreenBlur())
@@ -255,7 +255,7 @@ export default function Pomodoro() {
         position="relative"
       >
         <Timer
-          canPlay={canPlayTimer}
+          isLoaded={isTimerLoaded}
           task={task}
         />
 

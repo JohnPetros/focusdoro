@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { StyleSheet } from "react-native"
 import Animated, {
   useAnimatedProps,
@@ -21,6 +21,8 @@ import { Square, Text, useTheme, YStack } from "tamagui"
 import { XStack } from "tamagui"
 
 import { Task } from "../@types/task"
+import { useAudio } from "../hooks/useAudio"
+import { useBackgroundAudio } from "../hooks/useBackgroundAudio"
 import { useTimerStore } from "../hooks/useTimerStore"
 import { storage } from "../storage"
 import { convertSecondsToTime } from "../utils/convertSecondsToTime"
@@ -53,11 +55,11 @@ innerCirclePath.addCircle(
 )
 
 interface TimerProps {
-  canPlay: boolean
+  isLoaded: boolean
   task: Task
 }
 
-export function Timer({ canPlay, task }: TimerProps) {
+export function Timer({ isLoaded, task }: TimerProps) {
   const {
     state: {
       isPaused,
@@ -78,12 +80,16 @@ export function Timer({ canPlay, task }: TimerProps) {
       setCompletedSessions,
     },
   } = useTimerStore()
+  const [shouldReset, setShouldReset] = useState(false)
 
   const progress = useValue(0)
-  const minutes = useSharedValue(canPlay ? sessionSeconds / 60 : 0)
-  const seconds = useSharedValue(canPlay ? sessionSeconds % 60 : 0)
+  const minutes = useSharedValue(isLoaded ? sessionSeconds / 60 : 0)
+  const seconds = useSharedValue(isLoaded ? sessionSeconds % 60 : 0)
   const theme = useTheme()
   const toast = useToastController()
+  const { stop: stopBackgroundAudio } = useBackgroundAudio()
+  const { loadAudioUri, play } = useAudio()
+  const [isAudioLoaded, setIsAudioLoaded] = useState(false)
 
   const animatedMinutesText = useDerivedValue(() => {
     return `${minutes.value}`.padStart(2, "0")
@@ -105,6 +111,14 @@ export function Timer({ canPlay, task }: TimerProps) {
     },
   })
 
+  function reset() {
+    minutes.value = 0
+    seconds.value = 0
+    runTiming(progress, 1, {
+      duration: 250,
+    })
+  }
+
   function showToast(message: string) {
     toast.show(message, {
       icon: HourglassHigh,
@@ -112,8 +126,25 @@ export function Timer({ canPlay, task }: TimerProps) {
     })
   }
 
+  async function playEndSessionSound() {
+    stopBackgroundAudio()
+
+    if (isAudioLoaded) {
+      await play(false)
+      setShouldReset(true)
+    }
+  }
+
+  async function loadAudio() {
+    const isLoaded = await loadAudioUri(
+      "https://s3-us-west-2.amazonaws.com/s.cdpn.io/989813/chime.wav"
+    )
+
+    setIsAudioLoaded(isLoaded)
+  }
+
   useEffect(() => {
-    if (isPaused || !canPlay) return
+    if (isPaused || !isLoaded || shouldReset) return
 
     const isSessionEnd = sessionSeconds === -1
 
@@ -125,6 +156,7 @@ export function Timer({ canPlay, task }: TimerProps) {
 
       showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
       storage.updateTask({ ...task, isLongBreak: false })
+      playEndSessionSound()
       return
     }
 
@@ -137,6 +169,7 @@ export function Timer({ canPlay, task }: TimerProps) {
         `Take a long break for ${convertSecondsToTime(longBreakSeconds)}`
       )
       storage.updateTask({ ...task, isLongBreak: true })
+      playEndSessionSound()
       return
     }
 
@@ -148,6 +181,7 @@ export function Timer({ canPlay, task }: TimerProps) {
 
       showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
       storage.updateTask({ ...task, isBreak: false })
+      playEndSessionSound()
       return
     }
 
@@ -158,6 +192,7 @@ export function Timer({ canPlay, task }: TimerProps) {
 
       showToast(`Take a break for ${convertSecondsToTime(breakSeconds)}`)
       storage.updateTask({ ...task, isBreak: true })
+      playEndSessionSound()
       return
     }
 
@@ -173,17 +208,23 @@ export function Timer({ canPlay, task }: TimerProps) {
     }, 1000)
 
     return () => clearTimeout(timer)
-  }, [sessionSeconds, isPaused, canPlay])
+  }, [sessionSeconds, isPaused, shouldReset, isLoaded])
 
   useEffect(() => {
-    if (!canPlay) {
-      minutes.value = 0
-      seconds.value = 0
-      runTiming(progress, 1, {
-        duration: 250,
-      })
+    if (shouldReset) {
+      reset()
+      setTimeout(() => {
+        setShouldReset(false)
+      }, 500)
     }
-  }, [canPlay])
+  }, [shouldReset])
+
+  useEffect(() => {
+    if (!isLoaded) {
+      reset()
+      loadAudio()
+    }
+  }, [isLoaded])
 
   return (
     <>
