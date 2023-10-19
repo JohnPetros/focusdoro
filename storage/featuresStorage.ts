@@ -30,7 +30,10 @@ export const featuresStorage = (storage: MMKV): IFeaturesStorage => ({
         (task: Feature) => task.title !== updatedFeature.title
       )
 
-      this.setFeatures([...currentFeatures, updatedFeature])
+      const updatedFeatures = [...currentFeatures, updatedFeature]
+
+      this.setFeatures(updatedFeatures)
+      return updatedFeatures
     }
   },
 })
