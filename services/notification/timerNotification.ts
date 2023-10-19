@@ -45,7 +45,6 @@ export function timerNotification(): ITimerNotification {
         android: {
           channelId,
           asForegroundService: true,
-          actions: [{ title: "pause", pressAction: { id: "pause-timer" } }],
           onlyAlertOnce: true,
           progress: {
             max: 10,
@@ -65,6 +64,7 @@ export function timerNotification(): ITimerNotification {
           android: {
             channelId: timerChannelId.current,
             onlyAlertOnce: true,
+            asForegroundService: true,
             progress: {
               max: 10,
               current: progress,
