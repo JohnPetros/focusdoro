@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useNavigation } from "expo-router/src/useNavigation"
 
+import { TimerNotificationActionType } from "../@types/timerNotificationAction"
 import { useTimerStore } from "../hooks/useTimerStore"
 import { useNotification } from "../services/notification"
 import { convertSecondsToTime } from "../utils/convertSecondsToTime"
@@ -18,7 +19,9 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
       isLongBreak,
       sessionSeconds,
       totalSessionSeconds,
+      shouldReset,
     },
+    action: { setIsPaused, setShouldReset },
   } = useTimerStore()
   const notification = useNotification()
   const navigation = useNavigation()
@@ -32,7 +35,8 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
   }
 
   async function updateTimerNotification() {
-    const time = convertSecondsToTime(sessionSeconds + 1, true)
+    const seconds = shouldReset ? sessionSeconds : sessionSeconds + 1
+    const time = convertSecondsToTime(seconds, true)
 
     const sessionStatus = isBreak
       ? "break"
@@ -58,6 +62,27 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
     }
   }
 
+  function handleNotificationAction(action: TimerNotificationActionType) {
+    switch (action) {
+      case "pause":
+        setIsPaused(true)
+        break
+      case "resume":
+        setIsPaused(false)
+        break
+      case "reset":
+        setShouldReset(true)
+        setIsPaused(false)
+        break
+      case "close":
+        notification.cancelTimer()
+        setIsPaused(true)
+        break
+      default:
+        return
+    }
+  }
+
   async function handleScreenBlur() {
     await notification.cancelTimer()
   }
@@ -66,7 +91,9 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
     displayTimerNotification()
 
     notification.onTimerAction((event) => {
-      console.log(event)
+      handleNotificationAction(
+        event.detail.pressAction?.id as unknown as TimerNotificationActionType
+      )
     })
   }, [])
 
