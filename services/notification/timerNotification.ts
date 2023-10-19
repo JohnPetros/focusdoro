@@ -65,8 +65,6 @@ export function timerNotification(): ITimerNotification {
           android: {
             channelId: timerChannelId.current,
             onlyAlertOnce: true,
-            chronometerDirection: "down",
-            timestamp: Date.now() + 300000,
             progress: {
               max: 10,
               current: progress,
@@ -85,6 +83,10 @@ export function timerNotification(): ITimerNotification {
 
     async onTimerAction(callback: (notificationEvent: Event) => void) {
       notifee.onBackgroundEvent(async (event) => {
+        callback(event)
+      })
+
+      notifee.onForegroundEvent(async (event) => {
         callback(event)
       })
     },
