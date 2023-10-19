@@ -6,6 +6,7 @@ import {
   Bell,
   CaretLeft,
   Icon,
+  MusicNotes,
   Pause,
   SmileyXEyes,
   Timer,
@@ -28,27 +29,28 @@ import { Button } from "../../components/Button"
 import { Checkbox } from "../../components/Checkbox"
 import { NumberInput } from "../../components/NumberInput"
 import { TextInput } from "../../components/TextInput"
+import { useFeatures } from "../../hooks/useFeatures"
 import { storage } from "../../storage"
-import { features as defaultFeatures } from "../../utils/features"
 
-const { width } = Dimensions.get("window")
+const { width: SCREEN_WIDTH } = Dimensions.get("window")
 
 const PADDING_BETWEEN = 12
-const INPUT_NUMBER_WIDTH = width / 3 - PADDING_BETWEEN * 2
-const FEATURE_CHECKBOX_WIDTH = width
+const INPUT_NUMBER_WIDTH = SCREEN_WIDTH / 3 - PADDING_BETWEEN * 2
+const FEATURE_CHECKBOX_WIDTH = SCREEN_WIDTH
 
 const featuresIcons: Record<FeatureTitle, Icon> = {
   vibration: Vibrate,
   "automatic breaks": Pause,
   "automatic sessions": Timer,
   "show notification": Bell,
+  "background sound": MusicNotes,
 }
 
 export default function Settings() {
   const [task, setTask] = useState<Task | null>(null)
   const [taskTitle, setTaskTitle] = useState("")
-  const [features, setFeatures] = useState<Feature[]>([])
   const { taskId } = useLocalSearchParams()
+  const { features, updateFeature } = useFeatures()
   const theme = useTheme()
   const router = useRouter()
   const toast = useToastController()
@@ -57,10 +59,6 @@ export default function Settings() {
     toast.show(message, {
       icon: SmileyXEyes,
     })
-  }
-
-  function sortFeaturesByTitle(features: Feature[]) {
-    return features.sort((a, b) => a.title.localeCompare(b.title))
   }
 
   function updateTask(updatedTask: Task) {
@@ -74,10 +72,7 @@ export default function Settings() {
 
   function handleFeatureCheckbox(featureTitle: FeatureTitle) {
     const feature = storage.getFeatureByTitle(featureTitle)
-    storage.updateFeature({ ...feature, isActive: !feature.isActive })
-
-    const uptadedFeatures = storage.getFeatures()
-    setFeatures(sortFeaturesByTitle(uptadedFeatures))
+    updateFeature({ ...feature, isActive: !feature.isActive })
   }
 
   function handleBackButton() {
@@ -146,29 +141,13 @@ export default function Settings() {
     }
   }
 
-  async function fetchFeatures() {
-    try {
-      const features = storage.getFeatures()
-      if (features?.length) {
-        setFeatures(sortFeaturesByTitle(features))
-        return
-      }
-
-      setFeatures(sortFeaturesByTitle(defaultFeatures))
-      storage.setFeatures(defaultFeatures)
-    } catch (error) {
-      handleError(error.message as string)
-    }
-  }
-
   useEffect(() => {
     fetchTask()
-    fetchFeatures()
   }, [])
 
   if (task && features.length)
     return (
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <YStack
           position="relative"
           flex={1}
