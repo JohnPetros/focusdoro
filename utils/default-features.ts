@@ -1,10 +1,6 @@
 import { Feature } from "../@types/feature"
 
-export const features: Feature[] = [
-  {
-    title: "vibration",
-    isActive: true,
-  },
+export const DEFAULT_FEATURES: Feature[] = [
   {
     title: "automatic breaks",
     isActive: true,
@@ -14,7 +10,15 @@ export const features: Feature[] = [
     isActive: true,
   },
   {
+    title: "background sound",
+    isActive: true,
+  },
+  {
     title: "show notification",
+    isActive: true,
+  },
+  {
+    title: "vibration",
     isActive: true,
   },
 ]
