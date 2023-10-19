@@ -17,6 +17,7 @@ import {
 import { BookOpen } from "phosphor-react-native"
 import { Square, useTheme, XStack, YStack } from "tamagui"
 
+import { Feature } from "../../@types/feature"
 import { Task } from "../../@types/task"
 import {
   AudioModal,
@@ -28,6 +29,7 @@ import { TaskCard } from "../../components/TaskCard"
 import { Timer } from "../../components/Timer"
 import { TimerNotification } from "../../components/TimerNotification"
 import { useBackgroundAudio } from "../../hooks/useBackgroundAudio"
+import { useFeatures } from "../../hooks/useFeatures"
 import { useTimerStore } from "../../hooks/useTimerStore"
 import { storage } from "../../storage"
 import { convertMinutesToSeconds } from "../../utils/convertMinutesToSeconds"
@@ -41,7 +43,6 @@ export default function Pomodoro() {
       totalSessions,
       completedSessions,
       sessionSeconds,
-      totalSessionSeconds,
       breakSeconds,
       longBreakSeconds,
     },
@@ -58,10 +59,15 @@ export default function Pomodoro() {
     },
   } = useTimerStore()
   const { taskId } = useLocalSearchParams()
+  const { getFeatureByTitle, features } = useFeatures()
+  const { stop, play, isLoaded } = useBackgroundAudio()
+
   const [isTimerLoaded, setIsTimerLoaded] = useState(false)
   const [task, setTask] = useState<Task>(null)
+  const [notificationFeature, setNotificationFeature] =
+    useState<Feature | null>(null)
   const [isAudioModalOpen, setIsAudioModalOpen] = useState(false)
-  const { stop, play, isLoaded } = useBackgroundAudio()
+
   const router = useRouter()
   const navigation = useNavigation()
   const theme = useTheme()
@@ -137,6 +143,13 @@ export default function Pomodoro() {
       setIsTimerLoaded(false)
       fetchTask()
     }, [])
+  )
+
+  useFocusEffect(
+    useCallback(() => {
+      if (features.length)
+        setNotificationFeature(getFeatureByTitle("show notification"))
+    }, [features])
   )
 
   useEffect(() => {
@@ -260,7 +273,9 @@ export default function Pomodoro() {
           isLoaded={isTimerLoaded}
           task={task}
         />
-        <TimerNotification taskId={String(taskId)} />
+        {notificationFeature?.isActive && (
+          <TimerNotification taskId={String(taskId)} />
+        )}
 
         <YStack
           position="absolute"
