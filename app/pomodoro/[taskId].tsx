@@ -20,6 +20,7 @@ import { RoundButton } from "../../components/RoundButton"
 import { TaskCard } from "../../components/TaskCard"
 import { TaskControls } from "../../components/TaskControls"
 import { Timer } from "../../components/Timer"
+import { TimerControls } from "../../components/TimerControls"
 import { TimerNotification } from "../../components/TimerNotification"
 import { useBackgroundAudio } from "../../hooks/useBackgroundAudio"
 import { useFeatures } from "../../hooks/useFeatures"
@@ -113,7 +114,6 @@ export default function Pomodoro() {
     }
   }
 
- 
   function handleScreenBlur() {
     setIsTimerLoaded(false)
     setIsPaused(true)
@@ -193,67 +193,7 @@ export default function Pomodoro() {
           <TimerNotification taskId={String(taskId)} />
         )}
 
-        <YStack
-          position="absolute"
-          ai="center"
-          gap={16}
-          bottom={10}
-        >
-          <RoundButton
-            shadowColor={theme.blue8.val}
-            size="$7"
-            radius={36}
-            icon={
-              isPaused ? (
-                <Play
-                  color={theme.blue12.val}
-                  size={36}
-                />
-              ) : (
-                <Pause
-                  color={theme.blue12.val}
-                  size={36}
-                />
-              )
-            }
-            bc="$blue10"
-            onPress={handlePlayButton}
-            aria-label={`${isPaused ? "Play" : "Pause"} timer"`}
-          />
-
-          {isPaused && (
-            <XStack gap={64}>
-              <RoundButton
-                shadowColor={theme.blue8.val}
-                size="$4"
-                radius={28}
-                icon={
-                  <ClockCounterClockwise
-                    color={theme.blue12.val}
-                    size={24}
-                  />
-                }
-                bc="$blue10"
-                onPress={handleResetSessionButton}
-                aria-label="Reset current session"
-              />
-              <RoundButton
-                shadowColor={theme.blue8.val}
-                size="$4"
-                radius={28}
-                icon={
-                  <Reset
-                    color={theme.blue12.val}
-                    size={24}
-                  />
-                }
-                bc="$blue10"
-                onPress={handleResetPomodoroButton}
-                aria-label="Reset pomodoro"
-              />
-            </XStack>
-          )}
-        </YStack>
+        <TimerControls isTimerLoaded={isTimerLoaded} />
       </YStack>
     </YStack>
   )
