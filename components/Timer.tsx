@@ -26,6 +26,7 @@ import { useBackgroundAudio } from "../hooks/useBackgroundAudio"
 import { useTimerStore } from "../hooks/useTimerStore"
 import { storage } from "../storage"
 import { convertSecondsToTime } from "../utils/convertSecondsToTime"
+import { formatTime } from "../utils/formatTime"
 
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 const AnimatedText = Animated.createAnimatedComponent(Text)

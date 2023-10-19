@@ -3,6 +3,7 @@ import { useNavigation } from "expo-router/src/useNavigation"
 
 import { useTimerStore } from "../hooks/useTimerStore"
 import { useNotification } from "../services/notification"
+import { convertSecondsToTime } from "../utils/convertSecondsToTime"
 import { TIMER_NOTIFICATIONS_ACTIONS } from "../utils/timer-notifications-actions"
 
 interface TimerNotificationProps {
@@ -31,6 +32,8 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
   }
 
   async function updateTimerNotification() {
+    const time = convertSecondsToTime(sessionSeconds + 1, true)
+
     const sessionStatus = isBreak
       ? "break"
       : isLongBreak
@@ -48,6 +51,7 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
         title: `${sessionStatus} - ${timerStatus}`,
         progress: 10 - Math.floor((sessionSeconds / totalSessionSeconds) * 10),
         actions,
+        time,
       })
     } catch (error) {
       console.error(error)
@@ -60,6 +64,10 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
 
   useEffect(() => {
     displayTimerNotification()
+
+    notification.onTimerAction((event) => {
+      console.log(event)
+    })
   }, [])
 
   useEffect(() => {
