@@ -4,6 +4,7 @@ import notifee, {
   AndroidImportance,
   AndroidVisibility,
   AuthorizationStatus,
+  Event,
 } from "@notifee/react-native"
 
 import { ITimerNotification } from "./interfaces/ITimerNotification"
@@ -16,6 +17,12 @@ export function timerNotification(): ITimerNotification {
   return {
     async displayTimer(taskId) {
       if (AuthorizationStatus.DENIED) await notifee.requestPermission()
+
+      notifee.registerForegroundService(() => {
+        return new Promise(() => {
+          return null
+        })
+      })
 
       const channelId = await notifee.createChannel({
         id: CHANNELS.timer,
@@ -37,6 +44,7 @@ export function timerNotification(): ITimerNotification {
         },
         android: {
           channelId,
+          asForegroundService: true,
           actions: [{ title: "pause", pressAction: { id: "pause-timer" } }],
           onlyAlertOnce: true,
           progress: {
@@ -49,13 +57,16 @@ export function timerNotification(): ITimerNotification {
       timerId.current = id
     },
 
-    async updateTimer({ title, actions, progress }) {
+    async updateTimer({ title, actions, progress, time }) {
       if (timerId.current && timerChannelId.current)
         await notifee.displayNotification({
           id: timerId.current,
-          title,
+          title: `<strong>${title}</strong>: ${time}`,
           android: {
             channelId: timerChannelId.current,
+            onlyAlertOnce: true,
+            chronometerDirection: "down",
+            timestamp: Date.now() + 300000,
             progress: {
               max: 10,
               current: progress,
@@ -66,7 +77,16 @@ export function timerNotification(): ITimerNotification {
     },
 
     async cancelTimer() {
-      if (timerId.current) await notifee.cancelNotification(timerId.current)
+      if (timerId.current) {
+        await notifee.cancelNotification(timerId.current)
+        await notifee.stopForegroundService()
+      }
+    },
+
+    async onTimerAction(callback: (notificationEvent: Event) => void) {
+      notifee.onBackgroundEvent(async (event) => {
+        callback(event)
+      })
     },
   }
 }
