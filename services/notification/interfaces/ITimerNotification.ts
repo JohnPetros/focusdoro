@@ -1,6 +1,6 @@
 import { Event } from "@notifee/react-native"
 
-import { TimerNotificationAction } from "../../../@types/timer-notification-action"
+import { TimerNotificationAction } from "../../../@types/timerNotificationAction"
 
 interface UpdateTimerParams {
   title: string

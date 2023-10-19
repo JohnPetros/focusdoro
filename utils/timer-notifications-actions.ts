@@ -1,4 +1,4 @@
-import { TimerNotificationAction } from "../@types/timer-notification-action"
+import { TimerNotificationAction } from "../@types/timerNotificationAction"
 
 export const TIMER_NOTIFICATIONS_ACTIONS: Record<
   "running" | "paused",
