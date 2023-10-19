@@ -7,9 +7,6 @@ import {
 } from "expo-router"
 import {
   ClockCounterClockwise,
-  Gear,
-  House,
-  MusicNotes,
   Pause,
   Play,
   Square as Reset,
@@ -17,15 +14,11 @@ import {
 import { BookOpen } from "phosphor-react-native"
 import { Square, useTheme, XStack, YStack } from "tamagui"
 
-import { Feature } from "../../@types/feature"
-import { Task } from "../../@types/task"
-import {
-  AudioModal,
-  AudioModalContent,
-  AudioModalTrigger,
-} from "../../components/AudioModal"
+import type { Feature } from "../../@types/feature"
+import type { Task } from "../../@types/task"
 import { RoundButton } from "../../components/RoundButton"
 import { TaskCard } from "../../components/TaskCard"
+import { TaskControls } from "../../components/TaskControls"
 import { Timer } from "../../components/Timer"
 import { TimerNotification } from "../../components/TimerNotification"
 import { useBackgroundAudio } from "../../hooks/useBackgroundAudio"
@@ -71,14 +64,6 @@ export default function Pomodoro() {
   const router = useRouter()
   const navigation = useNavigation()
   const theme = useTheme()
-
-  function handleSettingsButton() {
-    router.push("/settings/" + taskId)
-  }
-
-  function handleHomeButton() {
-    router.push("/")
-  }
 
   function handlePlayButton() {
     if (isLoaded) setIsPaused(!isPaused)
@@ -128,10 +113,7 @@ export default function Pomodoro() {
     }
   }
 
-  function handleAudioModal() {
-    setIsAudioModalOpen(true)
-  }
-
+ 
   function handleScreenBlur() {
     setIsTimerLoaded(false)
     setIsPaused(true)
@@ -194,73 +176,7 @@ export default function Pomodoro() {
           icon={BookOpen}
           onPress={null}
         />
-        {isPaused && (
-          <XStack
-            w="100%"
-            mt={20}
-            mr={20}
-            ai="center"
-            jc="flex-end"
-            gap={20}
-            zIndex={50}
-            enterStyle={{ opacity: 0 }}
-            exitStyle={{ opacity: 0 }}
-            opacity={1}
-            animation="lazy"
-          >
-            <RoundButton
-              shadowColor={theme.blue12.val}
-              size="$2"
-              radius={18}
-              icon={
-                <Gear
-                  color={theme.blue12.val}
-                  size={16}
-                  weight="bold"
-                />
-              }
-              bc="$blue2"
-              onPress={handleSettingsButton}
-              aria-label="Open task settings"
-            />
-            <RoundButton
-              shadowColor={theme.blue12.val}
-              size="$2"
-              radius={18}
-              icon={
-                <House
-                  color={theme.blue12.val}
-                  size={16}
-                  weight="bold"
-                />
-              }
-              bc="$blue2"
-              onPress={handleHomeButton}
-              aria-label="Go back to home"
-            />
-            <AudioModal open={isAudioModalOpen}>
-              <AudioModalTrigger>
-                <RoundButton
-                  shadowColor={theme.blue12.val}
-                  size="$2"
-                  radius={18}
-                  icon={
-                    <MusicNotes
-                      color={theme.blue12.val}
-                      size={16}
-                      weight="bold"
-                    />
-                  }
-                  bc="$blue2"
-                  onPress={handleAudioModal}
-                  aria-label="Open audio modal"
-                />
-              </AudioModalTrigger>
-
-              <AudioModalContent setIsModalOpen={setIsAudioModalOpen} />
-            </AudioModal>
-          </XStack>
-        )}
+        <TaskControls taskId={taskId.toString()} />
       </Square>
 
       <YStack
