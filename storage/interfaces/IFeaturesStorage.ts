@@ -5,4 +5,5 @@ export interface IFeaturesStorage {
   getFeatureByTitle(featureTitle: string): Feature
   updateFeature(updatedFeature: Feature): Feature[]
   setFeatures(features: Feature[]): void
+  deleteFeatures(): void
 }

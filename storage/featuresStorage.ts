@@ -36,4 +36,8 @@ export const featuresStorage = (storage: MMKV): IFeaturesStorage => ({
       return updatedFeatures
     }
   },
+
+  deleteFeatures() {
+    storage.delete(FEATURES_KEY)
+  },
 })
