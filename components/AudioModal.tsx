@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Dimensions } from "react-native"
 import { Dialog } from "@tamagui/dialog"
 import { X } from "phosphor-react-native"
@@ -25,11 +25,12 @@ interface AudioModalContentProps {
 }
 
 export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
-  const theme = useTheme()
-  const { audio, storeAudio, loadAudioUri, play } = useBackgroundAudio()
+  const { audio, storeAudio, loadAudioUri } = useBackgroundAudio()
   const [selectedAudioFile, setSelectedAudioFile] = useState(audio)
   const [isAudioLoading, setIsAudioLoading] = useState(false)
   const [isAudioLoaded, setIsAudioLoaded] = useState(false)
+  const theme = useTheme()
+  const originalSelectedAudioFile = useRef(selectedAudioFile)
 
   function close() {
     setIsModalOpen(false)
@@ -42,6 +43,11 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
   }
 
   async function handlePlayAudio() {
+    if (selectedAudioFile === originalSelectedAudioFile.current) {
+      close()
+      return
+    }
+
     try {
       setIsAudioLoading(true)
 
@@ -53,6 +59,10 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
     } finally {
       setIsAudioLoading(false)
     }
+  }
+
+  function handleOpen() {
+    originalSelectedAudioFile.current = selectedAudioFile
   }
 
   useEffect(() => {
@@ -71,6 +81,7 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
           exitStyle={{ opacity: 0 }}
           opacity={0.7}
           backgroundColor="$blue2"
+          onLayout={handleOpen}
         />
         <Dialog.Content
           forceMount={true}
