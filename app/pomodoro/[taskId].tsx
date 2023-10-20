@@ -8,7 +8,6 @@ import {
 import { BookOpen } from "phosphor-react-native"
 import { Square, YStack } from "tamagui"
 
-import type { Feature } from "../../@types/feature"
 import type { Task } from "../../@types/task"
 import { TaskCard } from "../../components/TaskCard"
 import { TaskControls } from "../../components/TaskControls"
