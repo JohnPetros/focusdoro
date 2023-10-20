@@ -20,13 +20,14 @@ import { HourglassHigh, Pause } from "phosphor-react-native"
 import { Square, Text, useTheme, YStack } from "tamagui"
 import { XStack } from "tamagui"
 
+import { Feature } from "../@types/feature"
 import { Task } from "../@types/task"
 import { useAudio } from "../hooks/useAudio"
 import { useBackgroundAudio } from "../hooks/useBackgroundAudio"
+import { useFeatures } from "../hooks/useFeatures"
 import { useTimerStore } from "../hooks/useTimerStore"
 import { storage } from "../storage"
 import { convertSecondsToTime } from "../utils/convertSecondsToTime"
-import { formatTime } from "../utils/formatTime"
 
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 const AnimatedText = Animated.createAnimatedComponent(Text)
@@ -83,6 +84,9 @@ export function Timer({ isLoaded, task }: TimerProps) {
       setShouldReset,
     },
   } = useTimerStore()
+  const {
+    features: [vibrationFeature],
+  } = useFeatures(["vibration"])
 
   const progress = useValue(0)
   const minutes = useSharedValue(isLoaded ? sessionSeconds / 60 : 0)

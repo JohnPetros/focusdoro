@@ -5,18 +5,11 @@ import {
   useNavigation,
   useRouter,
 } from "expo-router"
-import {
-  ClockCounterClockwise,
-  Pause,
-  Play,
-  Square as Reset,
-} from "phosphor-react-native"
 import { BookOpen } from "phosphor-react-native"
-import { Square, useTheme, XStack, YStack } from "tamagui"
+import { Square, YStack } from "tamagui"
 
 import type { Feature } from "../../@types/feature"
 import type { Task } from "../../@types/task"
-import { RoundButton } from "../../components/RoundButton"
 import { TaskCard } from "../../components/TaskCard"
 import { TaskControls } from "../../components/TaskControls"
 import { Timer } from "../../components/Timer"
@@ -36,53 +29,29 @@ export default function Pomodoro() {
       isLongBreak,
       totalSessions,
       completedSessions,
-      sessionSeconds,
       breakSeconds,
       longBreakSeconds,
     },
     action: {
       setIsPaused,
-      setIsBreak,
-      setIsLongBreak,
       setSessionSeconds,
       setBreakSeconds,
       setTotalSessionSeconds,
       setTotalSessions,
       setCompletedSessions,
-      setShouldReset,
     },
   } = useTimerStore()
   const { taskId } = useLocalSearchParams()
-  const { getFeatureByTitle, features } = useFeatures()
+  const {
+    features: [audioFeature, notificationFeature],
+  } = useFeatures(["background sound", "show notification"])
   const { stop, play, isLoaded } = useBackgroundAudio()
 
   const [isTimerLoaded, setIsTimerLoaded] = useState(false)
   const [task, setTask] = useState<Task>(null)
-  const [notificationFeature, setNotificationFeature] =
-    useState<Feature | null>(null)
-  const [isAudioModalOpen, setIsAudioModalOpen] = useState(false)
 
   const router = useRouter()
   const navigation = useNavigation()
-  const theme = useTheme()
-
-  function handlePlayButton() {
-    if (isLoaded) setIsPaused(!isPaused)
-  }
-
-  function handleResetSessionButton() {
-    setShouldReset(true)
-    setIsPaused(false)
-  }
-
-  function handleResetPomodoroButton() {
-    setIsPaused(false)
-    setIsBreak(false)
-    setIsLongBreak(false)
-
-    setSessionSeconds(sessionSeconds)
-    setCompletedSessions(1)
-  }
 
   function fetchTask() {
     try {
@@ -127,30 +96,21 @@ export default function Pomodoro() {
     }, [])
   )
 
-  useFocusEffect(
-    useCallback(() => {
-      if (features.length)
-        setNotificationFeature(getFeatureByTitle("show notification"))
-    }, [features])
-  )
-
   useEffect(() => {
-    if (isAudioModalOpen) {
-      setIsPaused(true)
-      stop()
-      return
-    }
-    setIsPaused(false)
-  }, [isAudioModalOpen])
-
-  useEffect(() => {
-    if (isTimerLoaded && isLoaded && !isPaused && !isBreak && !isLongBreak) {
+    if (
+      audioFeature?.isActive &&
+      isTimerLoaded &&
+      isLoaded &&
+      !isPaused &&
+      !isBreak &&
+      !isLongBreak
+    ) {
       play()
       setIsPaused(false)
-    } else if (isLoaded && isPaused) {
+    } else if (audioFeature?.isActive && isLoaded && isPaused) {
       stop()
     }
-  }, [isTimerLoaded, isLoaded, isPaused, isBreak, isLongBreak])
+  }, [audioFeature, isTimerLoaded, isLoaded, isPaused, isBreak, isLongBreak])
 
   useEffect(() => {
     navigation.addListener("blur", () => handleScreenBlur())

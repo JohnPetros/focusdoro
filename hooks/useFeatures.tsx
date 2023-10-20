@@ -5,7 +5,7 @@ import { Feature, FeatureTitle } from "../@types/feature"
 import { storage } from "../storage"
 import { DEFAULT_FEATURES } from "../utils/default-features"
 
-export function useFeatures() {
+export function useFeatures(featureTypes: FeatureTitle[]) {
   const [features, setFeatures] = useState<Feature[]>([])
 
   function sortFeaturesByTitle(features: Feature[]) {
@@ -23,9 +23,12 @@ export function useFeatures() {
 
   function fetchFeatures() {
     try {
-      const features = storage.getFeatures()
+      const allFeatures = storage.getFeatures()
 
-      if (features?.length) {
+      if (allFeatures?.length) {
+        const features = allFeatures.filter((feature) =>
+          featureTypes.includes(feature.title)
+        )
         setFeatures(sortFeaturesByTitle(features))
         return
       }
@@ -44,7 +47,6 @@ export function useFeatures() {
 
   return {
     features,
-    getFeatureByTitle,
     updateFeature,
   }
 }

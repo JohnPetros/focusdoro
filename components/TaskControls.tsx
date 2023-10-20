@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "expo-router/src/hooks"
-import { Gear, House, MusicNotes } from "phosphor-react-native"
+import { Gear, House, SpeakerHigh, SpeakerSlash } from "phosphor-react-native"
 import { XStack } from "tamagui"
 
-import type { Feature } from "../@types/feature"
 import { useBackgroundAudio } from "../hooks/useBackgroundAudio"
 import { useFeatures } from "../hooks/useFeatures"
 import { useTimerStore } from "../hooks/useTimerStore"
@@ -16,14 +15,16 @@ interface TaskControls {
 }
 
 export function TaskControls({ taskId }: TaskControls) {
-  const [audioFeature, setAudioFeature] = useState<Feature | null>(null)
   const [isAudioModalOpen, setIsAudioModalOpen] = useState(false)
   const router = useRouter()
   const {
+    state: { isPaused },
     action: { setIsPaused },
   } = useTimerStore()
   const { stop } = useBackgroundAudio()
-  const { getFeatureByTitle } = useFeatures()
+  const {
+    features: [audioFeature],
+  } = useFeatures(["background sound"])
 
   function handleSettingsButton() {
     router.push("/settings/" + taskId)
@@ -46,46 +47,44 @@ export function TaskControls({ taskId }: TaskControls) {
     setIsPaused(false)
   }, [isAudioModalOpen])
 
-  useEffect(() => {
-    setAudioFeature(getFeatureByTitle("background sound"))
-  }, [])
+  if (isPaused)
+    return (
+      <XStack
+        w="100%"
+        mt={20}
+        mr={20}
+        ai="center"
+        jc="flex-end"
+        gap={20}
+        zIndex={50}
+        enterStyle={{ opacity: 0 }}
+        exitStyle={{ opacity: 0 }}
+        opacity={1}
+        animation="lazy"
+      >
+        <TaskControlButton
+          label="Open task settings"
+          onPress={handleSettingsButton}
+          icon={Gear}
+        />
+        <TaskControlButton
+          label="Go back to home"
+          onPress={handleHomeButton}
+          icon={House}
+        />
 
-  return (
-    <XStack
-      w="100%"
-      mt={20}
-      mr={20}
-      ai="center"
-      jc="flex-end"
-      gap={20}
-      zIndex={50}
-      enterStyle={{ opacity: 0 }}
-      exitStyle={{ opacity: 0 }}
-      opacity={1}
-      animation="lazy"
-    >
-      <TaskControlButton
-        label="Open task settings"
-        onPress={handleSettingsButton}
-        icon={Gear}
-      />
-      <TaskControlButton
-        label="Go back to home"
-        onPress={handleHomeButton}
-        icon={House}
-      />
+        <AudioModal open={isAudioModalOpen}>
+          <AudioModalTrigger>
+            <TaskControlButton
+              label="Open audio modal"
+              onPress={handleAudioModal}
+              icon={audioFeature?.isActive ? SpeakerHigh : SpeakerSlash}
+              isDisabled={!audioFeature?.isActive}
+            />
+          </AudioModalTrigger>
 
-      <AudioModal open={isAudioModalOpen}>
-        <AudioModalTrigger>
-          <TaskControlButton
-            label="Open audio modal"
-            onPress={handleAudioModal}
-            icon={MusicNotes}
-          />
-        </AudioModalTrigger>
-
-        <AudioModalContent setIsModalOpen={setIsAudioModalOpen} />
-      </AudioModal>
-    </XStack>
-  )
+          <AudioModalContent setIsModalOpen={setIsAudioModalOpen} />
+        </AudioModal>
+      </XStack>
+    )
 }

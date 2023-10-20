@@ -6,9 +6,9 @@ import {
   Bell,
   CaretLeft,
   Icon,
-  MusicNotes,
   Pause,
   SmileyXEyes,
+  SpeakerHigh,
   Timer,
   Vibrate,
 } from "phosphor-react-native"
@@ -23,7 +23,7 @@ import {
   YStack,
 } from "tamagui"
 
-import type { Feature, FeatureTitle } from "../../@types/feature"
+import type { FeatureTitle } from "../../@types/feature"
 import type { Task } from "../../@types/task"
 import { Button } from "../../components/Button"
 import { Checkbox } from "../../components/Checkbox"
@@ -43,14 +43,20 @@ const featuresIcons: Record<FeatureTitle, Icon> = {
   "automatic breaks": Pause,
   "automatic sessions": Timer,
   "show notification": Bell,
-  "background sound": MusicNotes,
+  "background sound": SpeakerHigh,
 }
 
 export default function Settings() {
   const [task, setTask] = useState<Task | null>(null)
   const [taskTitle, setTaskTitle] = useState("")
   const { taskId } = useLocalSearchParams()
-  const { features, updateFeature } = useFeatures()
+  const { features, updateFeature } = useFeatures([
+    "automatic breaks",
+    "automatic sessions",
+    "background sound",
+    "show notification",
+    "vibration",
+  ])
   const theme = useTheme()
   const router = useRouter()
   const toast = useToastController()
