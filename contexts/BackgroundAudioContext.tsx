@@ -2,6 +2,7 @@ import { createContext, ReactNode, useEffect, useState } from "react"
 
 import { useAudio } from "../hooks/useAudio"
 import { storage } from "../storage"
+import { AUDIOS } from "../utils/audios"
 
 type BackgroundAudioContextValue = {
   storeAudio: (audio: string) => void
@@ -33,9 +34,9 @@ export function BackgroundAudioProvider({
   }
 
   async function loadAudio() {
-    const audio = storage.getAudio()
-    setAudio(audio)
+    const audio = storage.getAudio() ?? AUDIOS[0].file
 
+    setAudio(audio)
     const isLoaded = await loadAudioUri(audio)
     setIsLoaded(isLoaded)
   }
