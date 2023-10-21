@@ -3,7 +3,7 @@ import { TextInput as TextInputRef } from "react-native"
 import { Input, InputProps } from "tamagui"
 
 interface TextInputProps extends InputProps {
-  inputRef: Ref<TextInputRef>
+  inputRef?: Ref<TextInputRef>
 }
 
 export function TextInput({ inputRef, ...rest }: TextInputProps) {
