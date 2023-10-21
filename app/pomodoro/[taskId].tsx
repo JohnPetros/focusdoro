@@ -16,6 +16,7 @@ import { TimerControls } from "../../components/TimerControls"
 import { TimerNotification } from "../../components/TimerNotification"
 import { useBackgroundAudio } from "../../hooks/useBackgroundAudio"
 import { useFeatures } from "../../hooks/useFeatures"
+import { useQuote } from "../../hooks/useQuote"
 import { useTimerStore } from "../../hooks/useTimerStore"
 import { useStorage } from "../../services/storage"
 import { convertMinutesToSeconds } from "../../utils/convertMinutesToSeconds"
@@ -59,6 +60,7 @@ export default function Pomodoro() {
   const router = useRouter()
   const navigation = useNavigation()
   const storage = useStorage()
+  const quote = useQuote(isEnd)
 
   function fetchTask() {
     try {
@@ -101,8 +103,6 @@ export default function Pomodoro() {
   }
 
   function handlePomodoroEnd() {
-    console.log("end")
-
     const sessionSeconds = convertMinutesToSeconds(task.sessionMinutes)
     const completedPomodoros = task.completedPomodoros + 1
 
@@ -199,14 +199,14 @@ export default function Pomodoro() {
               fontSize={14}
               mt={8}
             >
-              The will of man is his happiness.
+              {quote?.content}
             </Text>
             <Text
               color="$blue12"
               fontSize={12}
               textAlign="right"
             >
-              - Friedrich Schiller
+              - {quote?.author}
             </Text>
           </YStack>
         )}
