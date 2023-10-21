@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react"
-import { useToastController } from "@tamagui/toast"
-import { toast } from "burnt"
 
 type Quote = {
   content: string
