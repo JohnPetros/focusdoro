@@ -1,4 +1,4 @@
-import { Feature } from "../../@types/feature"
+import { Feature } from "../../../@types/feature"
 
 export interface IFeaturesStorage {
   getFeatures(): Feature[]

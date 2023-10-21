@@ -1,6 +1,6 @@
 import { MMKV } from "react-native-mmkv"
 
-import { Feature } from "../@types/feature"
+import { Feature } from "../../@types/feature"
 
 import { IFeaturesStorage } from "./interfaces/IFeaturesStorage"
 import { FEATURES_KEY } from "./keys"

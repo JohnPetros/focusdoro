@@ -16,7 +16,7 @@ type Audio = {
 const BASE_URL =
   "https://joeweaver.me/codepenassets/freecodecamp/challenges/build-a-pomodoro-clock"
 
-export const audios: Audio[] = [
+export const AUDIOS: Audio[] = [
   {
     title: "forest",
     file: `${BASE_URL}/forest.mp3`,

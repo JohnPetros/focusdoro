@@ -1,6 +1,6 @@
 import { MMKV } from "react-native-mmkv"
 
-import type { Task } from "../@types/task"
+import type { Task } from "../../@types/task"
 
 import { ITasksStorage } from "./interfaces/ITasksStorage"
 import { TASKS_KEY } from "./keys"

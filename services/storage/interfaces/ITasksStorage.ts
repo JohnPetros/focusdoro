@@ -1,4 +1,4 @@
-import { Task } from "../../@types/task"
+import { Task } from "../../../@types/task"
 
 export interface ITasksStorage {
   getTask(taskId: string): Task
