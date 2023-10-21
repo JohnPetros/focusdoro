@@ -4,8 +4,9 @@ type StoreState = {
   sessionSeconds: number
   breakSeconds: number
   longBreakSeconds: number
-  totalSessionSeconds: number
   completedSessions: number
+  completedPomodoros: number
+  totalSessionSeconds: number
   totalSessions: number
   isPaused: boolean
   isBreak: boolean
@@ -24,6 +25,7 @@ type StoreAction = {
   setTotalSessionSeconds: (totalSeconds: number) => void
   setTotalSessions: (totalSessions: number) => void
   setCompletedSessions: (completedSession: number) => void
+  setCompletedPomodoros: (completedSession: number) => void
   setShouldReset: (shouldReset: boolean) => void
   setIsEnd: (isEnd: boolean) => void
   resetState: () => void
@@ -40,6 +42,7 @@ const initialState: StoreState = {
   breakSeconds: 0,
   longBreakSeconds: 0,
   completedSessions: 0,
+  completedPomodoros: 0,
   totalSessions: 0,
   isPaused: false,
   isBreak: false,
@@ -114,6 +117,12 @@ export const useTimerStore = create<StoreProps>((set) => ({
     setIsEnd: (isEnd: boolean) =>
       set(({ state, action }: StoreProps) => ({
         state: { ...state, isEnd },
+        action,
+      })),
+
+    setCompletedPomodoros: (completedPomodoros: number) =>
+      set(({ state, action }: StoreProps) => ({
+        state: { ...state, completedPomodoros },
         action,
       })),
 
