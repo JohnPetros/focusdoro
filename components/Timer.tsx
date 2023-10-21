@@ -16,7 +16,7 @@ import {
   useValue,
 } from "@shopify/react-native-skia"
 import { useToastController } from "@tamagui/toast"
-import { HourglassHigh, Pause } from "phosphor-react-native"
+import { Check, HourglassHigh, Pause } from "phosphor-react-native"
 import { Square, Text, useTheme, YStack } from "tamagui"
 import { XStack } from "tamagui"
 
@@ -74,6 +74,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
       totalSessions,
       completedSessions,
       shouldReset,
+      isEnd,
     },
     action: {
       setSessionSeconds,
@@ -83,6 +84,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
       setCompletedSessions,
       setIsPaused,
       setShouldReset,
+      setIsEnd,
     },
   } = useTimerStore()
   const {
@@ -161,15 +163,17 @@ export function Timer({ isLoaded, task }: TimerProps) {
   }
 
   useEffect(() => {
-    if (isPaused || shouldReset) return
+    if (isPaused || shouldReset || isEnd) return
 
     const isSessionEnd = sessionSeconds === -1
 
     if (isSessionEnd && isLongBreak) {
-      setIsLongBreak(false)
-      setSessionSeconds(totalSessionSeconds)
-      setTotalSessionSeconds(totalSessionSeconds)
-      setCompletedSessions(1)
+      // setIsLongBreak(false)
+      // setSessionSeconds(totalSessionSeconds)
+      // setTotalSessionSeconds(totalSessionSeconds)
+      // setCompletedSessions(1)
+      setShouldReset(true)
+      setIsEnd(true)
 
       showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
       storage.updateTask({ ...task, isLongBreak: false })
@@ -246,65 +250,73 @@ export function Timer({ isLoaded, task }: TimerProps) {
 
   return (
     <>
-      <YStack>
-        <AnimatedXStack
-          ai="center"
-          gap={4}
-          zIndex={50}
-          animatedProps={opacityAnimatedProp}
-        >
-          <ReText
-            style={reTextStyle.style}
-            text={animatedMinutesText}
-          />
-          <Text
-            color="$blue11"
-            fontSize={48}
+      {isEnd ? (
+        <Check
+          color={theme.blue10.val}
+          size={120}
+          weight="bold"
+        />
+      ) : (
+        <YStack>
+          <AnimatedXStack
+            ai="center"
+            gap={4}
+            zIndex={50}
+            animatedProps={opacityAnimatedProp}
           >
-            :
-          </Text>
-          <ReText
-            style={reTextStyle.style}
-            text={animatedSecondsText}
-          />
-        </AnimatedXStack>
-        <AnimatedText
-          color="$yellow11"
-          textAlign="center"
-          mt={12}
-          opacity={isPaused ? 0.4 : 1}
-          zIndex={50}
-          animatedProps={opacityAnimatedProp}
-        >
-          {isLoaded && (
-            <>
-              {isBreak || isLongBreak
-                ? `${
-                    isLongBreak ? "Long break" : "break"
-                  } for ${convertSecondsToTime(breakSeconds)}`
-                : `${completedSessions} of ${totalSessions} sessions`}
-            </>
-          )}
-        </AnimatedText>
-        {isPaused && (
-          <Square
-            enterStyle={{
-              scale: 1.5,
-              y: -10,
-              opacity: 0,
-            }}
-            animation="bouncy"
-            zIndex={100}
-            position="absolute"
-            x={40}
-          >
-            <Pause
-              color={theme.blue12.val}
-              size={80}
+            <ReText
+              style={reTextStyle.style}
+              text={animatedMinutesText}
             />
-          </Square>
-        )}
-      </YStack>
+            <Text
+              color="$blue11"
+              fontSize={48}
+            >
+              :
+            </Text>
+            <ReText
+              style={reTextStyle.style}
+              text={animatedSecondsText}
+            />
+          </AnimatedXStack>
+          <AnimatedText
+            color="$yellow11"
+            textAlign="center"
+            mt={12}
+            opacity={isPaused ? 0.4 : 1}
+            zIndex={50}
+            animatedProps={opacityAnimatedProp}
+          >
+            {isLoaded && (
+              <>
+                {isBreak || isLongBreak
+                  ? `${
+                      isLongBreak ? "Long break" : "break"
+                    } for ${convertSecondsToTime(breakSeconds)}`
+                  : `${completedSessions} of ${totalSessions} sessions`}
+              </>
+            )}
+          </AnimatedText>
+          {isPaused && (
+            <Square
+              enterStyle={{
+                scale: 1.5,
+                y: -10,
+                opacity: 0,
+              }}
+              animation="bouncy"
+              zIndex={100}
+              position="absolute"
+              x={40}
+            >
+              <Pause
+                color={theme.blue12.val}
+                size={80}
+              />
+            </Square>
+          )}
+        </YStack>
+      )}
       <Canvas
         style={{
           position: "absolute",

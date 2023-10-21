@@ -11,6 +11,7 @@ type StoreState = {
   isBreak: boolean
   isLongBreak: boolean
   shouldReset: boolean
+  isEnd: boolean
 }
 
 type StoreAction = {
@@ -24,6 +25,7 @@ type StoreAction = {
   setTotalSessions: (totalSessions: number) => void
   setCompletedSessions: (completedSession: number) => void
   setShouldReset: (shouldReset: boolean) => void
+  setIsEnd: (isEnd: boolean) => void
   resetState: () => void
 }
 
@@ -43,6 +45,7 @@ const initialState: StoreState = {
   isBreak: false,
   isLongBreak: false,
   shouldReset: false,
+  isEnd: false,
 }
 
 export const useTimerStore = create<StoreProps>((set) => ({
@@ -105,6 +108,12 @@ export const useTimerStore = create<StoreProps>((set) => ({
     setShouldReset: (shouldReset: boolean) =>
       set(({ state, action }: StoreProps) => ({
         state: { ...state, shouldReset },
+        action,
+      })),
+
+    setIsEnd: (isEnd: boolean) =>
+      set(({ state, action }: StoreProps) => ({
+        state: { ...state, isEnd },
         action,
       })),
 

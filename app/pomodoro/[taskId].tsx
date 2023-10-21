@@ -6,7 +6,7 @@ import {
   useRouter,
 } from "expo-router"
 import { BookOpen } from "phosphor-react-native"
-import { Square, YStack } from "tamagui"
+import { Square, Text, YStack } from "tamagui"
 
 import type { Task } from "../../@types/task"
 import { TaskCard } from "../../components/TaskCard"
@@ -28,8 +28,7 @@ export default function Pomodoro() {
       isLongBreak,
       totalSessions,
       completedSessions,
-      breakSeconds,
-      longBreakSeconds,
+      isEnd,
     },
     action: {
       setIsPaused,
@@ -41,10 +40,8 @@ export default function Pomodoro() {
       setLongBreakSeconds,
       setIsBreak,
       setIsLongBreak,
-      resetState,
     },
   } = useTimerStore()
-  console.log({ isPaused })
 
   const { taskId } = useLocalSearchParams()
   const {
@@ -75,6 +72,8 @@ export default function Pomodoro() {
           ? taskLongBreakSeconds
           : convertMinutesToSeconds(task.sessionMinutes)
 
+        console.log(task.isBreak)
+
         setTask(task)
         setIsBreak(task.isBreak)
         setIsLongBreak(task.isLongBreak)
@@ -85,7 +84,7 @@ export default function Pomodoro() {
 
         console.log({ sessionSeconds })
 
-        setSessionSeconds(sessionSeconds)
+        setSessionSeconds(5)
         setTotalSessionSeconds(sessionSeconds)
 
         setTimeout(() => {
@@ -150,6 +149,33 @@ export default function Pomodoro() {
           onPress={null}
         />
         <TaskControls taskId={taskId.toString()} />
+
+        {isEnd && (
+          <YStack mt={12}>
+            <Text
+              color="$blue12"
+              fontWeight="bold"
+              textTransform="uppercase"
+              textAlign="center"
+            >
+              You completed this Pomodoro. Congratulations!
+            </Text>
+            <Text
+              color="$blue12"
+              fontSize={14}
+              mt={8}
+            >
+              The will of man is his happiness.
+            </Text>
+            <Text
+              color="$blue12"
+              fontSize={12}
+              textAlign="right"
+            >
+              - Friedrich Schiller
+            </Text>
+          </YStack>
+        )}
       </Square>
 
       <YStack
