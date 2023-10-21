@@ -1,8 +1,11 @@
+import { Dimensions } from "react-native"
 import { Toast as T, useToastState } from "@tamagui/toast"
 import { Square, useTheme, XStack } from "tamagui"
 
-const WIDTH = 280
-const X_PADDING = 8
+const { width: SCREEN_WIDTH } = Dimensions.get("window")
+
+const WIDTH = SCREEN_WIDTH - 96
+const X_PADDING = 2
 const Y_PADDING = 12
 
 export function Toast() {
@@ -21,7 +24,7 @@ export function Toast() {
       enterStyle={{ opacity: 0, scale: 0.5, y: -25 }}
       exitStyle={{ opacity: 0, scale: 1, y: -20 }}
       y={24}
-      x={-(WIDTH / 2 + X_PADDING * 2)}
+      x={-(SCREEN_WIDTH / 2 - 24)}
       opacity={1}
       scale={1}
       animation="bouncy"
@@ -38,7 +41,6 @@ export function Toast() {
         py={Y_PADDING}
       >
         <Square
-          bc="$blue6"
           ai="center"
           jc="center"
         >
