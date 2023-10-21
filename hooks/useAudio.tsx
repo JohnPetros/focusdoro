@@ -1,21 +1,17 @@
 import { useState } from "react"
-import { Audio } from "expo-av"
+import { Audio, AVPlaybackSource } from "expo-av"
 
 type Sound = Audio.Sound | null
 
 export function useAudio() {
   const [sound, setSound] = useState<Sound>(null)
 
-  async function loadAudioUri(uri: string) {
+  async function loadAudioFile(audio: AVPlaybackSource) {
     if (sound) {
       await sound.unloadAsync()
     }
 
-    const newSound = new Audio.Sound()
-
-    await newSound.loadAsync({
-      uri,
-    })
+    const { sound: newSound } = await Audio.Sound.createAsync(audio)
 
     setSound(newSound)
 
@@ -24,7 +20,7 @@ export function useAudio() {
 
   async function stop() {
     if (sound?._loaded) {
-      await Promise.all([sound.stopAsync()])
+      await sound.stopAsync()
     }
   }
 
@@ -40,6 +36,6 @@ export function useAudio() {
   return {
     play,
     stop,
-    loadAudioUri,
+    loadAudioFile,
   }
 }

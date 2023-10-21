@@ -2,11 +2,13 @@ import { createContext, ReactNode, useEffect, useState } from "react"
 
 import { useAudio } from "../hooks/useAudio"
 import { useStorage } from "../services/storage"
-import { AUDIOS } from "../utils/audios"
+import { AudioTitle } from "../utils/audios"
+
+const PATH = "../assets/audios"
 
 type BackgroundAudioContextValue = {
   storeAudio: (audio: string) => void
-  loadAudioUri: (uri: string) => Promise<boolean>
+  loadAudio: (audio: string) => Promise<boolean>
   play: (isLooping?: boolean) => Promise<void>
   stop: () => Promise<void>
   audio: string
@@ -29,21 +31,43 @@ export function BackgroundAudioProvider({
   const [isLoaded, setIsLoaded] = useState(false)
   const storage = useStorage()
 
-  function storeAudio(audio: string) {
-    setAudio(audio)
-    storage.setAudio(audio)
+  function getAudio(audioTitle: AudioTitle) {
+    switch (audioTitle) {
+      case "forest":
+        return require(`${PATH}/forest.mp3`)
+      case "rain":
+        return require(`${PATH}/rain.mp3`)
+      case "cafe":
+        return require(`${PATH}/cafe.mp3`)
+      case "peace":
+        return require(`${PATH}/peace.mp3`)
+      case "ocean":
+      default:
+        return require(`${PATH}/ocean.mp3`)
+    }
   }
 
-  async function loadAudio() {
-    const audio = storage.getAudio() ?? AUDIOS[0].file
-
+  function storeAudio(audio: string) {
     setAudio(audio)
-    const isLoaded = await loadAudioUri(audio)
-    setIsLoaded(isLoaded)
+    storage.setAudio(String(audio))
+  }
+
+  async function loadAudio(audio: string) {
+    if (!audio) return
+
+    try {
+      const isLoaded = await loadAudioUri(getAudio(audio as AudioTitle))
+
+      setIsLoaded(isLoaded)
+      return isLoaded
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {
-    loadAudio()
+    const audio = storage.getAudio()
+    loadAudio(audio)
   }, [])
 
   return (
@@ -51,7 +75,7 @@ export function BackgroundAudioProvider({
       value={{
         play,
         stop,
-        loadAudioUri,
+        loadAudio,
         storeAudio,
         audio,
         isLoaded,
