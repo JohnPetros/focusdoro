@@ -28,7 +28,7 @@ export function timerNotification(): ITimerNotification {
         id: CHANNELS.timer,
         name: CHANNELS.timer,
         vibration: false,
-        importance: AndroidImportance.HIGH,
+        importance: AndroidImportance.DEFAULT,
         visibility: AndroidVisibility.PUBLIC,
       })
 
