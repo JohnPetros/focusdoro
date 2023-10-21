@@ -27,6 +27,7 @@ export function AlertContent({
         opacity={0.5}
       />
       <AlertDialog.Content
+        testID="alert"
         bordered
         elevate
         key="content"
@@ -62,6 +63,7 @@ export function AlertContent({
         >
           <AlertDialog.Action asChild>
             <Button
+              testID="alert-confirm"
               onPress={onConfirm}
               bc="$red10"
               flex={1}
@@ -71,6 +73,7 @@ export function AlertContent({
           </AlertDialog.Action>
           <AlertDialog.Cancel asChild>
             <Button
+              testID="alert-cancel"
               bc="$blue8"
               flex={1}
               onPress={onCancel}
