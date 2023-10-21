@@ -1,11 +1,12 @@
 import { useCallback, useRef, useState } from "react"
-import { FlatList } from "react-native"
+import { FlatList, TextInput as TextInputRef } from "react-native"
 import { Swipeable } from "react-native-gesture-handler"
 import uuid from "react-native-uuid"
 import { useToastController } from "@tamagui/toast"
 import { useFocusEffect, useRouter } from "expo-router"
-import { Play, Plus, SmileyXEyes, Trash } from "phosphor-react-native"
+import { Notepad, Play, Plus, SmileyXEyes, Trash } from "phosphor-react-native"
 import { Button, H2, useTheme, View, XStack, YStack } from "tamagui"
+import { Text } from "tamagui"
 
 import type { Task } from "../@types/task"
 import { AlertContent, AlertRoot, AlertTrigger } from "../components/Alert"
@@ -24,6 +25,7 @@ export default function Home() {
   const toast = useToastController()
   const storage = useStorage()
   const { vibrate } = useVibration()
+  const inputRef = useRef<TextInputRef>(null)
 
   function handleError(message: string) {
     toast.show(message, {
@@ -49,6 +51,13 @@ export default function Home() {
       console.error(error)
       handleError("Failed to remove task")
     }
+  }
+
+  function handleEmptyMessageTask() {
+    toast.show("Add a title to your task", {
+      icon: Notepad,
+    })
+    inputRef.current?.focus()
   }
 
   async function handleNewTaskButton() {
@@ -112,6 +121,7 @@ export default function Home() {
         jc="space-between"
       >
         <TextInput
+          inputRef={inputRef}
           w="80%"
           placeholder="What are you working on?"
           value={newTaskTitle}
@@ -208,6 +218,16 @@ export default function Home() {
               />
             </Swipeable>
           )}
+          ListEmptyComponent={
+            <Text
+              textAlign="center"
+              fontSize={24}
+              fontWeight="bold"
+              onPress={handleEmptyMessageTask}
+            >
+              Add your first task
+            </Text>
+          }
         />
       </YStack>
     </YStack>
