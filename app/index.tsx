@@ -29,7 +29,7 @@ export default function Home() {
     toast.show(message, {
       icon: SmileyXEyes,
     })
-    
+
     vibrate("error")
   }
 
@@ -43,7 +43,8 @@ export default function Home() {
 
   async function handleRemoveTaskButton(taskId: string) {
     try {
-      storage.destroyTask(taskId)
+      const updatedTasks = storage.destroyTask(taskId)
+      setTasks(updatedTasks)
     } catch (error) {
       console.error(error)
       handleError("Failed to remove task")
