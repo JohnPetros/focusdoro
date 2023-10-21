@@ -44,6 +44,7 @@ export function TaskControls({ taskId }: TaskControls) {
       stop()
       return
     }
+
     setIsPaused(false)
   }, [isAudioModalOpen])
 
