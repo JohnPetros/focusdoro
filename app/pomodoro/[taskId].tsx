@@ -101,6 +101,8 @@ export default function Pomodoro() {
   }
 
   function handlePomodoroEnd() {
+    console.log("end")
+
     const sessionSeconds = convertMinutesToSeconds(task.sessionMinutes)
     const completedPomodoros = task.completedPomodoros + 1
 
@@ -124,11 +126,14 @@ export default function Pomodoro() {
   }
 
   function handleScreenBlur() {
+    if (isEnd) {
+      handlePomodoroEnd()
+      return
+    }
+
     setIsTimerLoaded(false)
     setIsPaused(true)
     stop()
-
-    if (isEnd) handlePomodoroEnd()
   }
 
   useFocusEffect(
@@ -139,13 +144,13 @@ export default function Pomodoro() {
   )
 
   useEffect(() => {
-    if (isTimerLoaded && !isPaused && !isBreak && !isLongBreak) {
+    if (isTimerLoaded && !isPaused && !isBreak && !isLongBreak && !isEnd) {
       if (audioFeature?.isActive && isLoaded) play()
       setIsPaused(false)
     } else if (audioFeature?.isActive && isLoaded && !isPaused) {
       stop()
     }
-  }, [audioFeature, isTimerLoaded, isLoaded, isBreak, isLongBreak])
+  }, [audioFeature, isTimerLoaded, isLoaded, isBreak, isLongBreak, isEnd])
 
   useEffect(() => {
     if (task && completedSessions)
@@ -156,7 +161,7 @@ export default function Pomodoro() {
     navigation.addListener("blur", () => handleScreenBlur())
 
     return () => navigation.removeListener("blur", () => handleScreenBlur())
-  }, [navigation])
+  }, [navigation, isEnd])
 
   return (
     <YStack
