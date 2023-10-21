@@ -1,5 +1,6 @@
-import { BookmarkSimple, Icon } from "phosphor-react-native"
+import { Icon } from "phosphor-react-native"
 import { H4, Square, useTheme, XStack, YStack } from "tamagui"
+import { Text } from "tamagui"
 
 import { RoundButton } from "./RoundButton"
 import { SessionCounter } from "./SessionCounter"
@@ -9,6 +10,7 @@ interface TaskCardProps {
   isActive?: boolean
   totalSessions: number
   completedSessions: number
+  completedPomodoros: number
   icon: Icon
   label?: string
   onPress: VoidFunction | null
@@ -19,6 +21,7 @@ export function TaskCard({
   isActive = false,
   totalSessions,
   completedSessions,
+  completedPomodoros,
   icon: Icon,
   onPress,
   label,
@@ -47,10 +50,25 @@ export function TaskCard({
         bc="$blue4"
         ai="center"
         jc="center"
-        p={8}
         br={12}
+        w={32}
+        h={32}
       >
-        <BookmarkSimple color={theme[color].val} />
+        {completedPomodoros > 0 ? (
+          <Text
+            fontWeight="bold"
+            color={theme[color].val}
+          >
+            + {completedPomodoros}
+          </Text>
+        ) : (
+          <Text
+            fontWeight="bold"
+            color={theme[color].val}
+          >
+            0
+          </Text>
+        )}
       </Square>
       <YStack
         ai="center"
