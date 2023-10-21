@@ -28,12 +28,14 @@ export const tasksStorage = (storage: MMKV): ITasksStorage => ({
     storage.set(TASKS_KEY, JSON.stringify(updatedTasks))
   },
 
-  destroyTask(id: string): void {
-    const tasks = this.getTasks()
+  destroyTask(id: string): Task[] {
+    const tasks: Task[] = this.getTasks()
 
     const updatedTasks = tasks?.filter((task: Task) => task.id !== id)
 
     storage.set(TASKS_KEY, JSON.stringify(updatedTasks))
+
+    return updatedTasks
   },
 
   destroyAllTasks(): void {
