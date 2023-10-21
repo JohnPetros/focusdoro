@@ -5,7 +5,7 @@ import { X } from "phosphor-react-native"
 import { useTheme, XStack } from "tamagui"
 
 import { useBackgroundAudio } from "../hooks/useBackgroundAudio"
-import { audios } from "../utils/audios"
+import { AUDIOS } from "../utils/audios"
 
 import { Button } from "./Button"
 import { Checkbox } from "./Checkbox"
@@ -133,7 +133,7 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
             alignItems="center"
             justifyContent="center"
           >
-            {audios.map((audio) => (
+            {AUDIOS.map((audio) => (
               <Checkbox
                 key={audio.title}
                 id={audio.title}
