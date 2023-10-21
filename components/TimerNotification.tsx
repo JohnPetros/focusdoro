@@ -36,8 +36,7 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
   }
 
   async function updateTimerNotification() {
-    const seconds =
-      shouldReset || isPaused || isEnd ? sessionSeconds : sessionSeconds + 1
+    const seconds = shouldReset || isEnd ? sessionSeconds : sessionSeconds + 1
     const time = convertSecondsToTime(seconds, true)
 
     const sessionStatus = isBreak
