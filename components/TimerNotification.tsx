@@ -20,6 +20,7 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
       sessionSeconds,
       totalSessionSeconds,
       shouldReset,
+      isEnd,
     },
     action: { setIsPaused, setShouldReset },
   } = useTimerStore()
@@ -84,8 +85,12 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
     }
   }
 
-  async function handleScreenBlur() {
+  async function cancelNotification() {
     await notification.cancelTimer()
+  }
+
+  async function handleScreenBlur() {
+    cancelNotification()
   }
 
   useEffect(() => {
@@ -99,8 +104,12 @@ export function TimerNotification({ taskId }: TimerNotificationProps) {
   }, [])
 
   useEffect(() => {
-    updateTimerNotification()
+    if (!isEnd) updateTimerNotification()
   }, [sessionSeconds, isPaused, isLongBreak, isBreak])
+
+  useEffect(() => {
+    if (isEnd) cancelNotification()
+  }, [isEnd])
 
   useEffect(() => {
     navigation.addListener("blur", () => handleScreenBlur())
