@@ -78,8 +78,6 @@ export default function Pomodoro() {
           ? taskLongBreakSeconds
           : convertMinutesToSeconds(task.sessionMinutes)
 
-        console.log(task.isBreak)
-
         setTask(task)
         setIsBreak(task.isBreak)
         setIsLongBreak(task.isLongBreak)
@@ -89,7 +87,7 @@ export default function Pomodoro() {
         setBreakSeconds(convertMinutesToSeconds(task.breakMinutes))
         setLongBreakSeconds(convertMinutesToSeconds(task.longBreakMinutes))
 
-        setSessionSeconds(5)
+        setSessionSeconds(sessionSeconds)
         setTotalSessionSeconds(sessionSeconds)
 
         setTimeout(() => {
@@ -145,12 +143,22 @@ export default function Pomodoro() {
 
   useEffect(() => {
     if (isTimerLoaded && !isPaused && !isBreak && !isLongBreak && !isEnd) {
-      if (audioFeature?.isActive && isLoaded) play()
+      if (audioFeature?.isActive && isLoaded) {
+        play()
+      }
       setIsPaused(false)
-    } else if (audioFeature?.isActive && isLoaded && !isPaused) {
+    } else if (audioFeature?.isActive && isLoaded && isPaused) {
       stop()
     }
-  }, [audioFeature, isTimerLoaded, isLoaded, isBreak, isLongBreak, isEnd])
+  }, [
+    audioFeature,
+    isTimerLoaded,
+    isLoaded,
+    isBreak,
+    isPaused,
+    isLongBreak,
+    isEnd,
+  ])
 
   useEffect(() => {
     if (task && completedSessions)
