@@ -18,6 +18,7 @@ import {
   H2,
   Label,
   ScrollView,
+  Text,
   useTheme,
   XStack,
   YStack,
@@ -30,7 +31,7 @@ import { Checkbox } from "../../components/Checkbox"
 import { NumberInput } from "../../components/NumberInput"
 import { TextInput } from "../../components/TextInput"
 import { useFeatures } from "../../hooks/useFeatures"
-import { storage } from "../../storage"
+import { useStorage } from "../../services/storage"
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window")
 
@@ -40,7 +41,6 @@ const FEATURE_CHECKBOX_WIDTH = SCREEN_WIDTH
 
 const featuresIcons: Record<FeatureTitle, Icon> = {
   vibration: Vibrate,
-  "automatic breaks": Pause,
   "automatic sessions": Timer,
   "show notification": Bell,
   "background sound": SpeakerHigh,
@@ -51,7 +51,6 @@ export default function Settings() {
   const [taskTitle, setTaskTitle] = useState("")
   const { taskId } = useLocalSearchParams()
   const { features, updateFeature } = useFeatures([
-    "automatic breaks",
     "automatic sessions",
     "background sound",
     "show notification",
@@ -60,6 +59,7 @@ export default function Settings() {
   const theme = useTheme()
   const router = useRouter()
   const toast = useToastController()
+  const storage = useStorage()
 
   function handleError(message: string) {
     toast.show(message, {
@@ -120,6 +120,7 @@ export default function Settings() {
     const updatedTask: Task = {
       ...task,
       totalSessions: value,
+      completedSessions: 1,
     }
 
     updateTask(updatedTask)
@@ -147,6 +148,8 @@ export default function Settings() {
     }
   }
 
+  
+
   useEffect(() => {
     fetchTask()
   }, [])
@@ -159,127 +162,140 @@ export default function Settings() {
           flex={1}
           bc="$blue2"
         >
-          <XStack
-            ai="center"
-            gap={12}
-          >
-            <BackButton
-              unstyled
-              ai="center"
-              jc="center"
-              onPress={handleBackButton}
-            >
-              <CaretLeft
-                color={theme.blue12.val}
-                weight="bold"
-              />
-            </BackButton>
-            <H1
-              fontSize={24}
-              letterSpacing={1.1}
-            >
-              Task Settings
-            </H1>
-          </XStack>
-          <YStack
-            mt={12}
-            gap={8}
-          >
-            <Label fontSize={16}>Title</Label>
-            <TextInput
-              value={taskTitle}
-              onChangeText={handleTaskTitleInputChange}
-              w="100%"
-            />
-          </YStack>
+          {task && features.length > 0 ? (
+            <>
+              <XStack
+                ai="center"
+                gap={12}
+              >
+                <BackButton
+                  unstyled
+                  ai="center"
+                  jc="center"
+                  onPress={handleBackButton}
+                >
+                  <CaretLeft
+                    color={theme.blue12.val}
+                    weight="bold"
+                  />
+                </BackButton>
+                <H1
+                  fontSize={24}
+                  letterSpacing={1.1}
+                >
+                  Task Settings
+                </H1>
+              </XStack>
+              <YStack
+                mt={12}
+                gap={8}
+              >
+                <Label fontSize={16}>Title</Label>
+                <TextInput
+                  value={taskTitle}
+                  onChangeText={handleTaskTitleInputChange}
+                  w="100%"
+                />
+              </YStack>
 
-          <YStack
-            mt={24}
-            alignItems="center"
-          >
-            <H2
-              color="$blue12"
-              fontSize={16}
-            >
-              Durations
-            </H2>
-            <XStack
-              ai="center"
-              gap={PADDING_BETWEEN}
-            >
-              <NumberInput
-                minValue={1}
-                maxValue={60}
-                label="Session"
-                value={task.sessionMinutes}
-                width={INPUT_NUMBER_WIDTH}
-                onChange={handleSessionNumberInputChange}
-              />
-              <NumberInput
-                minValue={1}
-                maxValue={60}
-                label="Break"
-                value={task.breakMinutes}
-                width={INPUT_NUMBER_WIDTH}
-                onChange={handleBreakNumberInputChange}
-              />
-              <NumberInput
-                minValue={1}
-                maxValue={60}
-                label="Long break"
-                value={task.longBreakMinutes}
-                width={INPUT_NUMBER_WIDTH}
-                onChange={handleLongBreakNumberInputChange}
-              />
-            </XStack>
-          </YStack>
+              <YStack
+                mt={24}
+                alignItems="center"
+              >
+                <H2
+                  color="$blue12"
+                  fontSize={16}
+                >
+                  Durations
+                </H2>
+                <XStack
+                  ai="center"
+                  gap={PADDING_BETWEEN}
+                >
+                  <NumberInput
+                    minValue={1}
+                    maxValue={60}
+                    label="Session"
+                    value={task.sessionMinutes}
+                    width={INPUT_NUMBER_WIDTH}
+                    onChange={handleSessionNumberInputChange}
+                  />
+                  <NumberInput
+                    minValue={1}
+                    maxValue={60}
+                    label="Break"
+                    value={task.breakMinutes}
+                    width={INPUT_NUMBER_WIDTH}
+                    onChange={handleBreakNumberInputChange}
+                  />
+                  <NumberInput
+                    minValue={1}
+                    maxValue={60}
+                    label="Long break"
+                    value={task.longBreakMinutes}
+                    width={INPUT_NUMBER_WIDTH}
+                    onChange={handleLongBreakNumberInputChange}
+                  />
+                </XStack>
+              </YStack>
 
-          <YStack
-            mt={24}
-            alignItems="center"
-          >
-            <H2
+              <YStack
+                mt={24}
+                alignItems="center"
+              >
+                <H2
+                  color="$blue12"
+                  fontSize={16}
+                >
+                  Other preferences
+                </H2>
+                <NumberInput
+                  minValue={1}
+                  maxValue={8}
+                  label="Sessions amount"
+                  unit="total"
+                  value={task.totalSessions}
+                  width={INPUT_NUMBER_WIDTH * 2}
+                  onChange={handleTotalSessionsNumberInputChange}
+                />
+              </YStack>
+              <XStack
+                gap={PADDING_BETWEEN}
+                mt={24}
+                flexWrap="wrap"
+                alignItems="center"
+                justifyContent="center"
+                mb={40}
+              >
+                {features.map((feature) => (
+                  <Checkbox
+                    key={String(feature.title)}
+                    id={String(feature.title)}
+                    label={feature.title}
+                    value={feature.title}
+                    isChecked={feature.isActive}
+                    icon={featuresIcons[feature.title]}
+                    onCheck={(value) =>
+                      handleFeatureCheckbox(value as FeatureTitle)
+                    }
+                    width={FEATURE_CHECKBOX_WIDTH}
+                  />
+                ))}
+              </XStack>
+              <XStack mt="auto">
+                <Button onPress={handlePlayPomodoroButton}>
+                  Play Pomodoro
+                </Button>
+              </XStack>
+            </>
+          ) : (
+            <Text
+              textAlign="center"
               color="$blue12"
-              fontSize={16}
             >
-              Other preferences
-            </H2>
-            <NumberInput
-              minValue={1}
-              maxValue={8}
-              label="Sessions amount"
-              unit="total"
-              value={task.totalSessions}
-              width={INPUT_NUMBER_WIDTH * 2}
-              onChange={handleTotalSessionsNumberInputChange}
-            />
-          </YStack>
-          <XStack
-            gap={PADDING_BETWEEN}
-            mt={24}
-            flexWrap="wrap"
-            alignItems="center"
-            justifyContent="center"
-            mb={40}
-          >
-            {features.map((feature) => (
-              <Checkbox
-                key={String(feature.title)}
-                id={String(feature.title)}
-                label={feature.title}
-                value={feature.title}
-                isChecked={feature.isActive}
-                icon={featuresIcons[feature.title]}
-                onCheck={(value) =>
-                  handleFeatureCheckbox(value as FeatureTitle)
-                }
-                width={FEATURE_CHECKBOX_WIDTH}
-              />
-            ))}
-          </XStack>
-          <XStack mt="auto">
-            <Button onPress={handlePlayPomodoroButton}>Play Pomodoro</Button>
-          </XStack>
+              Loading task settings...
+            </Text>
+          )}
         </YStack>
       </ScrollView>
     )
