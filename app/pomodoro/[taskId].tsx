@@ -40,6 +40,7 @@ export default function Pomodoro() {
       setLongBreakSeconds,
       setIsBreak,
       setIsLongBreak,
+      setShouldReset,
       setIsEnd,
     },
   } = useTimerStore()
@@ -83,8 +84,6 @@ export default function Pomodoro() {
         setBreakSeconds(convertMinutesToSeconds(task.breakMinutes))
         setLongBreakSeconds(convertMinutesToSeconds(task.longBreakMinutes))
 
-        console.log({ sessionSeconds })
-
         setSessionSeconds(5)
         setTotalSessionSeconds(sessionSeconds)
 
@@ -100,21 +99,31 @@ export default function Pomodoro() {
 
   function handlePomodoroEnd() {
     const sessionSeconds = convertMinutesToSeconds(task.sessionMinutes)
+    console.log({ sessionSeconds })
 
     setIsBreak(false)
     setIsLongBreak(false)
     setSessionSeconds(sessionSeconds)
     setTotalSessionSeconds(sessionSeconds)
     setCompletedSessions(1)
-    storage.updateTask({ ...task, completedSessions: 1 })
+
+    storage.updateTask({
+      ...task,
+      completedSessions: 1,
+      isBreak: false,
+      isLongBreak: false,
+    })
 
     setIsEnd(false)
+    setShouldReset(true)
   }
 
   function handleScreenBlur() {
     setIsTimerLoaded(false)
     setIsPaused(true)
     stop()
+
+    if (isEnd) handlePomodoroEnd()
   }
 
   useFocusEffect(
