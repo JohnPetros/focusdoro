@@ -170,8 +170,8 @@ export function Timer({ isLoaded, task }: TimerProps) {
       setShouldReset(true)
       setIsEnd(true)
 
-      showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
       storage.updateTask({ ...task, isLongBreak: false })
+      hanldeSessionEnd()
       return
     }
 

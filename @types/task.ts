@@ -6,6 +6,7 @@ export type Task = {
   sessionMinutes: number
   breakMinutes: number
   longBreakMinutes: number
+  completedPomodoros: number
   isBreak: boolean
   isLongBreak: boolean
   isSelected: boolean

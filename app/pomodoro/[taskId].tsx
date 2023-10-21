@@ -28,6 +28,7 @@ export default function Pomodoro() {
       isLongBreak,
       totalSessions,
       completedSessions,
+      completedPomodoros,
       isEnd,
     },
     action: {
@@ -37,6 +38,7 @@ export default function Pomodoro() {
       setTotalSessionSeconds,
       setTotalSessions,
       setCompletedSessions,
+      setCompletedPomodoros,
       setLongBreakSeconds,
       setIsBreak,
       setIsLongBreak,
@@ -81,6 +83,7 @@ export default function Pomodoro() {
         setIsLongBreak(task.isLongBreak)
         setTotalSessions(task.totalSessions)
         setCompletedSessions(task.completedSessions)
+        setCompletedPomodoros(task.completedPomodoros)
         setBreakSeconds(convertMinutesToSeconds(task.breakMinutes))
         setLongBreakSeconds(convertMinutesToSeconds(task.longBreakMinutes))
 
@@ -99,17 +102,19 @@ export default function Pomodoro() {
 
   function handlePomodoroEnd() {
     const sessionSeconds = convertMinutesToSeconds(task.sessionMinutes)
-    console.log({ sessionSeconds })
+    const completedPomodoros = task.completedPomodoros + 1
 
     setIsBreak(false)
     setIsLongBreak(false)
     setSessionSeconds(sessionSeconds)
     setTotalSessionSeconds(sessionSeconds)
     setCompletedSessions(1)
+    setCompletedPomodoros(completedPomodoros)
 
     storage.updateTask({
       ...task,
       completedSessions: 1,
+      completedPomodoros: completedPomodoros,
       isBreak: false,
       isLongBreak: false,
     })
@@ -168,6 +173,7 @@ export default function Pomodoro() {
           isActive={!isPaused && !isBreak}
           totalSessions={totalSessions}
           completedSessions={completedSessions}
+          completedPomodoros={completedPomodoros}
           icon={BookOpen}
           onPress={null}
         />

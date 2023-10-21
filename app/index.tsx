@@ -67,6 +67,7 @@ export default function Home() {
       sessionMinutes: 20,
       breakMinutes: 5,
       longBreakMinutes: 15,
+      completedPomodoros: 0,
       isBreak: false,
       isLongBreak: false,
       isSelected: false,
@@ -199,6 +200,7 @@ export default function Home() {
                 title={item.title}
                 totalSessions={item.totalSessions}
                 completedSessions={item.completedSessions}
+                completedPomodoros={item.completedPomodoros}
                 icon={Play}
                 isActive={item.isSelected}
                 onPress={() => handleTaskButton(item.id)}
