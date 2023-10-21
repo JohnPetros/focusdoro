@@ -51,6 +51,10 @@ export function TimerControls({ isTimerLoaded }: TimerControlsProps) {
       ai="center"
       gap={16}
       bottom={10}
+      enterStyle={{ opacity: 0 }}
+      exitStyle={{ opacity: 0 }}
+      opacity={1}
+      animation="lazy"
     >
       <TimerControlButton
         icon={isPaused ? Play : Pause}
