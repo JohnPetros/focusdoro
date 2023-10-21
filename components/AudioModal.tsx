@@ -25,25 +25,25 @@ interface AudioModalContentProps {
 }
 
 export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
-  const { audio, storeAudio, loadAudioUri } = useBackgroundAudio()
-  const [selectedAudioFile, setSelectedAudioFile] = useState(audio)
+  const { audio, storeAudio, loadAudio } = useBackgroundAudio()
+  const [selectedAudio, setSelectedAudio] = useState(audio)
   const [isAudioLoading, setIsAudioLoading] = useState(false)
   const [isAudioLoaded, setIsAudioLoaded] = useState(false)
   const theme = useTheme()
-  const originalSelectedAudioFile = useRef(selectedAudioFile)
+  const originalSelectedAudio = useRef(selectedAudio)
 
   function close() {
     setIsModalOpen(false)
   }
 
-  async function handleAudioCheckboxChange(audioFile: string) {
-    setSelectedAudioFile(audioFile)
-    storeAudio(audioFile)
+  async function handleAudioCheckboxChange(audio: string) {
+    setSelectedAudio(audio)
+    storeAudio(audio)
     setIsAudioLoaded(false)
   }
 
   async function handlePlayAudio() {
-    if (selectedAudioFile === originalSelectedAudioFile.current) {
+    if (selectedAudio === originalSelectedAudio.current) {
       close()
       return
     }
@@ -51,7 +51,8 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
     try {
       setIsAudioLoading(true)
 
-      const isLoaded = await loadAudioUri(selectedAudioFile)
+      const isLoaded = await loadAudio(selectedAudio)
+      console.log(isLoaded)
 
       setIsAudioLoaded(isLoaded)
     } catch (error) {
@@ -62,7 +63,7 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
   }
 
   function handleOpen() {
-    originalSelectedAudioFile.current = selectedAudioFile
+    originalSelectedAudio.current = selectedAudio
   }
 
   useEffect(() => {
@@ -138,8 +139,8 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
                 key={audio.title}
                 id={audio.title}
                 label={audio.title}
-                value={audio.file}
-                isChecked={audio.file === selectedAudioFile}
+                value={audio.title}
+                isChecked={audio.title === selectedAudio}
                 icon={audio.icon}
                 width={CHECKBOX_WIDTH}
                 onCheck={handleAudioCheckboxChange}

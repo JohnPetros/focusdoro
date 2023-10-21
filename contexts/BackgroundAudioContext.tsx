@@ -26,7 +26,7 @@ interface BackgroundAudioProviderProps {
 export function BackgroundAudioProvider({
   children,
 }: BackgroundAudioProviderProps) {
-  const { play, stop, loadAudioUri } = useAudio()
+  const { play, stop, loadAudioFile } = useAudio()
   const [audio, setAudio] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
   const storage = useStorage()
@@ -56,7 +56,7 @@ export function BackgroundAudioProvider({
     if (!audio) return
 
     try {
-      const isLoaded = await loadAudioUri(getAudio(audio as AudioTitle))
+      const isLoaded = await loadAudioFile(getAudio(audio as AudioTitle))
 
       setIsLoaded(isLoaded)
       return isLoaded

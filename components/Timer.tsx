@@ -99,7 +99,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
   const theme = useTheme()
   const toast = useToastController()
   const { stop: stopBackgroundAudio } = useBackgroundAudio()
-  const { loadAudioUri, play } = useAudio()
+  const { loadAudioFile, play } = useAudio()
   const [isAudioLoaded, setIsAudioLoaded] = useState(false)
 
   const animatedMinutesText = useDerivedValue(() => {
@@ -154,10 +154,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
   }
 
   async function loadAudio() {
-    const isLoaded = await loadAudioUri(
-      "https://s3-us-west-2.amazonaws.com/s.cdpn.io/989813/chime.wav"
-    )
-
+    const isLoaded = await loadAudioFile(require("../assets/audios/bell.wav"))
     setIsAudioLoaded(isLoaded)
   }
 
@@ -168,7 +165,6 @@ export function Timer({ isLoaded, task }: TimerProps) {
 
     if (isSessionEnd && isLongBreak) {
       hanldeSessionEnd()
-      
       setShouldReset(true)
       setIsEnd(true)
 
@@ -178,8 +174,8 @@ export function Timer({ isLoaded, task }: TimerProps) {
 
     if (isSessionEnd && completedSessions === totalSessions) {
       setIsLongBreak(true)
-      setSessionSeconds(5)
-      setTotalSessionSeconds(5)
+      setSessionSeconds(longBreakSeconds)
+      setTotalSessionSeconds(longBreakSeconds)
 
       showToast(
         `Take a long break for ${convertSecondsToTime(longBreakSeconds)}`
