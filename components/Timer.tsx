@@ -20,12 +20,12 @@ import { HourglassHigh, Pause } from "phosphor-react-native"
 import { Square, Text, useTheme, YStack } from "tamagui"
 import { XStack } from "tamagui"
 
-import { Feature } from "../@types/feature"
 import { Task } from "../@types/task"
 import { useAudio } from "../hooks/useAudio"
 import { useBackgroundAudio } from "../hooks/useBackgroundAudio"
 import { useFeatures } from "../hooks/useFeatures"
 import { useTimerStore } from "../hooks/useTimerStore"
+import { useVibration } from "../hooks/useVibration"
 import { storage } from "../storage"
 import { convertSecondsToTime } from "../utils/convertSecondsToTime"
 
@@ -87,6 +87,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
   const {
     features: [vibrationFeature],
   } = useFeatures(["vibration"])
+  const vibrate = useVibration()
 
   const progress = useValue(0)
   const minutes = useSharedValue(isLoaded ? sessionSeconds / 60 : 0)
@@ -133,8 +134,9 @@ export function Timer({ isLoaded, task }: TimerProps) {
     })
   }
 
-  async function playEndSessionSound() {
+  async function hanldeSessionEnd() {
     stopBackgroundAudio()
+    vibrate("success")
 
     if (isAudioLoaded) {
       await play(false)
@@ -163,7 +165,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
 
       showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
       storage.updateTask({ ...task, isLongBreak: false })
-      playEndSessionSound()
+      hanldeSessionEnd()
       return
     }
 
@@ -176,7 +178,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
         `Take a long break for ${convertSecondsToTime(longBreakSeconds)}`
       )
       storage.updateTask({ ...task, isLongBreak: true })
-      playEndSessionSound()
+      hanldeSessionEnd()
       return
     }
 
@@ -188,7 +190,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
 
       showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
       storage.updateTask({ ...task, isBreak: false })
-      playEndSessionSound()
+      hanldeSessionEnd()
       return
     }
 
@@ -199,7 +201,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
 
       showToast(`Take a break for ${convertSecondsToTime(breakSeconds)}`)
       storage.updateTask({ ...task, isBreak: true })
-      playEndSessionSound()
+      hanldeSessionEnd()
       return
     }
 
