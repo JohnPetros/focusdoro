@@ -2,10 +2,6 @@ import { Feature } from "../@types/feature"
 
 export const DEFAULT_FEATURES: Feature[] = [
   {
-    title: "automatic breaks",
-    isActive: true,
-  },
-  {
     title: "automatic sessions",
     isActive: true,
   },

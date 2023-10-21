@@ -1,5 +1,4 @@
 export type FeatureTitle =
-  | "automatic breaks"
   | "automatic sessions"
   | "background sound"
   | "show notification"
