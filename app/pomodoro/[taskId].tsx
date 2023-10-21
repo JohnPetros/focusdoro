@@ -40,6 +40,7 @@ export default function Pomodoro() {
       setLongBreakSeconds,
       setIsBreak,
       setIsLongBreak,
+      setIsEnd,
     },
   } = useTimerStore()
 
@@ -95,6 +96,19 @@ export default function Pomodoro() {
       console.error(error)
       router.push("/")
     }
+  }
+
+  function handlePomodoroEnd() {
+    const sessionSeconds = convertMinutesToSeconds(task.sessionMinutes)
+
+    setIsBreak(false)
+    setIsLongBreak(false)
+    setSessionSeconds(sessionSeconds)
+    setTotalSessionSeconds(sessionSeconds)
+    setCompletedSessions(1)
+    storage.updateTask({ ...task, completedSessions: 1 })
+
+    setIsEnd(false)
   }
 
   function handleScreenBlur() {
@@ -193,7 +207,12 @@ export default function Pomodoro() {
           <TimerNotification taskId={String(taskId)} />
         )}
 
-        {isTimerLoaded && <TimerControls isTimerLoaded={isTimerLoaded} />}
+        {isTimerLoaded && (
+          <TimerControls
+            isTimerLoaded={isTimerLoaded}
+            onEnd={handlePomodoroEnd}
+          />
+        )}
       </YStack>
     </YStack>
   )

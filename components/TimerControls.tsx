@@ -12,11 +12,12 @@ import { TimerControlButton } from "./TimerControlButton"
 
 interface TimerControlsProps {
   isTimerLoaded: boolean
+  onEnd: VoidFunction
 }
 
-export function TimerControls({ isTimerLoaded }: TimerControlsProps) {
+export function TimerControls({ isTimerLoaded, onEnd }: TimerControlsProps) {
   const {
-    state: { isPaused, sessionSeconds },
+    state: { isPaused, sessionSeconds, isEnd },
     action: {
       setIsPaused,
       setIsBreak,
@@ -28,7 +29,11 @@ export function TimerControls({ isTimerLoaded }: TimerControlsProps) {
   } = useTimerStore()
 
   function handlePlayButton() {
-    if (isTimerLoaded) setIsPaused(!isPaused)
+    if (isTimerLoaded && !isEnd) {
+      setIsPaused(!isPaused)
+    }
+
+    if (isEnd) onEnd()
   }
 
   function handleResetSessionButton() {
@@ -57,7 +62,7 @@ export function TimerControls({ isTimerLoaded }: TimerControlsProps) {
       animation="lazy"
     >
       <TimerControlButton
-        icon={isPaused ? Play : Pause}
+        icon={isPaused || isEnd ? Play : Pause}
         label={`${isPaused ? "Play" : "Pause"} timer"`}
         onPress={handlePlayButton}
         isLarge
