@@ -29,8 +29,6 @@ export function useAudio() {
   }
 
   async function play(isLooping = true) {
-    console.log(sound?._loaded)
-
     if (sound?._loaded)
       await Promise.all([
         sound.setIsLoopingAsync(isLooping),
