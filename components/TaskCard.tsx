@@ -13,6 +13,7 @@ interface TaskCardProps {
   completedPomodoros: number
   icon: Icon
   label?: string
+  hasAnimation?: boolean
   onPress: VoidFunction | null
 }
 
@@ -25,6 +26,7 @@ export function TaskCard({
   icon: Icon,
   onPress,
   label,
+  hasAnimation = true,
 }: TaskCardProps) {
   const theme = useTheme()
 
@@ -40,11 +42,11 @@ export function TaskCard({
       py={12}
       br={12}
       w="100%"
-      bc="$blue2"
+      bg="$blue2"
       enterStyle={{ opacity: 0 }}
       exitStyle={{ opacity: 0 }}
       opacity={1}
-      animation="lazy"
+      animation={hasAnimation ? "lazy" : undefined}
     >
       <Square
         bc="$blue4"
