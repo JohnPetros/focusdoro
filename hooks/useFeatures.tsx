@@ -2,18 +2,15 @@ import { useCallback, useState } from "react"
 import { useFocusEffect } from "expo-router/src/useFocusEffect"
 
 import { Feature, FeatureTitle } from "../@types/feature"
-import { storage } from "../storage"
+import { useStorage } from "../services/storage"
 import { DEFAULT_FEATURES } from "../utils/default-features"
 
 export function useFeatures(featureTypes: FeatureTitle[]) {
   const [features, setFeatures] = useState<Feature[]>([])
+  const storage = useStorage()
 
   function sortFeaturesByTitle(features: Feature[]) {
     return features.sort((a, b) => a.title.localeCompare(b.title))
-  }
-
-  function getFeatureByTitle(featureTitle: FeatureTitle) {
-    return features.find((feature) => feature.title === featureTitle)
   }
 
   function updateFeature(updatedFeature: Feature) {
