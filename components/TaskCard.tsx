@@ -38,6 +38,10 @@ export function TaskCard({
       br={12}
       w="100%"
       bc="$blue2"
+      enterStyle={{ opacity: 0 }}
+      exitStyle={{ opacity: 0 }}
+      opacity={1}
+      animation="lazy"
     >
       <Square
         bc="$blue4"
