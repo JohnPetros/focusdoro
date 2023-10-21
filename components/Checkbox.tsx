@@ -79,6 +79,7 @@ export function Checkbox({
             htmlFor={id}
             color={theme[color].val}
             textTransform="uppercase"
+            testID={label}
           >
             {label}
           </Label>
