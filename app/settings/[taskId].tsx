@@ -6,7 +6,6 @@ import {
   Bell,
   CaretLeft,
   Icon,
-  Pause,
   SmileyXEyes,
   SpeakerHigh,
   Timer,

@@ -215,6 +215,7 @@ export default function Home() {
                 isActive={item.isSelected}
                 onPress={() => handleTaskButton(item.id)}
                 label="play task's pomodoro"
+                hasAnimation={false}
               />
             </Swipeable>
           )}
