@@ -12,7 +12,8 @@ import { AlertContent, AlertRoot, AlertTrigger } from "../components/Alert"
 import { RoundButton } from "../components/RoundButton"
 import { TaskCard } from "../components/TaskCard"
 import { TextInput } from "../components/TextInput"
-import { storage } from "../storage"
+import { useVibration } from "../hooks/useVibration"
+import { useStorage } from "../services/storage"
 
 export default function Home() {
   const [newTaskTitle, setNewTaskTitle] = useState("")
@@ -21,11 +22,15 @@ export default function Home() {
   const router = useRouter()
   const swipeableRefs = useRef<Swipeable[]>([])
   const toast = useToastController()
+  const storage = useStorage()
+  const { vibrate } = useVibration()
 
   function handleError(message: string) {
     toast.show(message, {
       icon: SmileyXEyes,
     })
+    
+    vibrate("error")
   }
 
   function handleTaskButton(taskId: string) {
