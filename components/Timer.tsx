@@ -26,7 +26,7 @@ import { useBackgroundAudio } from "../hooks/useBackgroundAudio"
 import { useFeatures } from "../hooks/useFeatures"
 import { useTimerStore } from "../hooks/useTimerStore"
 import { useVibration } from "../hooks/useVibration"
-import { storage } from "../storage"
+import { useStorage } from "../services/storage"
 import { convertSecondsToTime } from "../utils/convertSecondsToTime"
 
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
@@ -81,13 +81,16 @@ export function Timer({ isLoaded, task }: TimerProps) {
       setIsLongBreak,
       setTotalSessionSeconds,
       setCompletedSessions,
+      setIsPaused,
       setShouldReset,
     },
   } = useTimerStore()
   const {
-    features: [vibrationFeature],
-  } = useFeatures(["vibration"])
-  const vibrate = useVibration()
+    features: [automaticSessionFeature],
+  } = useFeatures(["automatic sessions"])
+
+  const vibration = useVibration()
+  const storage = useStorage()
 
   const progress = useValue(0)
   const minutes = useSharedValue(isLoaded ? sessionSeconds / 60 : 0)
@@ -122,21 +125,26 @@ export function Timer({ isLoaded, task }: TimerProps) {
     minutes.value = 0
     seconds.value = 0
     runTiming(progress, 1, {
-      duration: 250,
+      duration: 1000,
     })
     setSessionSeconds(totalSessionSeconds)
+
+    if (isLoaded && !automaticSessionFeature?.isActive) {
+      setIsPaused(true)
+    }
   }
 
   function showToast(message: string) {
-    toast.show(message, {
-      icon: HourglassHigh,
-      duration: 3000,
-    })
+    if (automaticSessionFeature?.isActive)
+      toast.show(message, {
+        icon: HourglassHigh,
+        duration: 3000,
+      })
   }
 
   async function hanldeSessionEnd() {
     stopBackgroundAudio()
-    vibrate("success")
+    vibration.vibrate("success")
 
     if (isAudioLoaded) {
       await play(false)
@@ -153,7 +161,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
   }
 
   useEffect(() => {
-    if (isPaused || !isLoaded || shouldReset) return
+    if (isPaused || shouldReset) return
 
     const isSessionEnd = sessionSeconds === -1
 
@@ -165,6 +173,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
 
       showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
       storage.updateTask({ ...task, isLongBreak: false })
+
       hanldeSessionEnd()
       return
     }
@@ -267,11 +276,15 @@ export function Timer({ isLoaded, task }: TimerProps) {
           zIndex={50}
           animatedProps={opacityAnimatedProp}
         >
-          {isBreak || isLongBreak
-            ? `${
-                isLongBreak ? "Long break" : "break"
-              } for ${convertSecondsToTime(breakSeconds)}`
-            : `${completedSessions} of ${totalSessions} sessions`}
+          {isLoaded && (
+            <>
+              {isBreak || isLongBreak
+                ? `${
+                    isLongBreak ? "Long break" : "break"
+                  } for ${convertSecondsToTime(breakSeconds)}`
+                : `${completedSessions} of ${totalSessions} sessions`}
+            </>
+          )}
         </AnimatedText>
         {isPaused && (
           <Square

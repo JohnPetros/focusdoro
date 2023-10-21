@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from "react"
 
 import { useAudio } from "../hooks/useAudio"
-import { storage } from "../storage"
+import { useStorage } from "../services/storage"
 import { AUDIOS } from "../utils/audios"
 
 type BackgroundAudioContextValue = {
@@ -27,6 +27,7 @@ export function BackgroundAudioProvider({
   const { play, stop, loadAudioUri } = useAudio()
   const [audio, setAudio] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
+  const storage = useStorage()
 
   function storeAudio(audio: string) {
     setAudio(audio)

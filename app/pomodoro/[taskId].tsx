@@ -17,7 +17,7 @@ import { TimerNotification } from "../../components/TimerNotification"
 import { useBackgroundAudio } from "../../hooks/useBackgroundAudio"
 import { useFeatures } from "../../hooks/useFeatures"
 import { useTimerStore } from "../../hooks/useTimerStore"
-import { storage } from "../../storage"
+import { useStorage } from "../../services/storage"
 import { convertMinutesToSeconds } from "../../utils/convertMinutesToSeconds"
 
 export default function Pomodoro() {
@@ -38,8 +38,14 @@ export default function Pomodoro() {
       setTotalSessionSeconds,
       setTotalSessions,
       setCompletedSessions,
+      setLongBreakSeconds,
+      setIsBreak,
+      setIsLongBreak,
+      resetState,
     },
   } = useTimerStore()
+  console.log({ isPaused })
+
   const { taskId } = useLocalSearchParams()
   const {
     features: [audioFeature, notificationFeature],
@@ -51,23 +57,33 @@ export default function Pomodoro() {
 
   const router = useRouter()
   const navigation = useNavigation()
+  const storage = useStorage()
 
   function fetchTask() {
     try {
       const task = storage.getTask(String(taskId))
 
       if (task) {
-        setTask(task)
+        const taskBreakSeconds = convertMinutesToSeconds(task.breakMinutes)
+        const taskLongBreakSeconds = convertMinutesToSeconds(
+          task.longBreakMinutes
+        )
 
+        const sessionSeconds = task.isBreak
+          ? taskBreakSeconds
+          : task.isLongBreak
+          ? taskLongBreakSeconds
+          : convertMinutesToSeconds(task.sessionMinutes)
+
+        setTask(task)
+        setIsBreak(task.isBreak)
+        setIsLongBreak(task.isLongBreak)
         setTotalSessions(task.totalSessions)
         setCompletedSessions(task.completedSessions)
         setBreakSeconds(convertMinutesToSeconds(task.breakMinutes))
+        setLongBreakSeconds(convertMinutesToSeconds(task.longBreakMinutes))
 
-        const sessionSeconds = task.isBreak
-          ? breakSeconds
-          : task.isLongBreak
-          ? longBreakSeconds
-          : convertMinutesToSeconds(task.sessionMinutes)
+        console.log({ sessionSeconds })
 
         setSessionSeconds(sessionSeconds)
         setTotalSessionSeconds(sessionSeconds)
@@ -96,20 +112,18 @@ export default function Pomodoro() {
   )
 
   useEffect(() => {
-    if (
-      audioFeature?.isActive &&
-      isTimerLoaded &&
-      isLoaded &&
-      !isPaused &&
-      !isBreak &&
-      !isLongBreak
-    ) {
-      play()
+    if (isTimerLoaded && !isPaused && !isBreak && !isLongBreak) {
+      if (audioFeature?.isActive && isLoaded) play()
       setIsPaused(false)
-    } else if (audioFeature?.isActive && isLoaded && isPaused) {
+    } else if (audioFeature?.isActive && isLoaded && !isPaused) {
       stop()
     }
-  }, [audioFeature, isTimerLoaded, isLoaded, isPaused, isBreak, isLongBreak])
+  }, [audioFeature, isTimerLoaded, isLoaded, isBreak, isLongBreak])
+
+  useEffect(() => {
+    if (task && completedSessions)
+      storage.updateTask({ ...task, completedSessions })
+  }, [task, completedSessions])
 
   useEffect(() => {
     navigation.addListener("blur", () => handleScreenBlur())
@@ -148,11 +162,12 @@ export default function Pomodoro() {
           isLoaded={isTimerLoaded}
           task={task}
         />
+
         {notificationFeature?.isActive && (
           <TimerNotification taskId={String(taskId)} />
         )}
 
-        <TimerControls isTimerLoaded={isTimerLoaded} />
+        {isTimerLoaded && <TimerControls isTimerLoaded={isTimerLoaded} />}
       </YStack>
     </YStack>
   )
