@@ -90,7 +90,6 @@ export function Timer({ isLoaded, task }: TimerProps) {
   const {
     features: [automaticSessionFeature],
   } = useFeatures(["automatic sessions"])
-
   const vibration = useVibration()
   const storage = useStorage()
 
@@ -112,7 +111,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
   })
 
   const opacityAnimatedProp = useAnimatedProps(() => ({
-    opacity: withTiming(isPaused ? 0.4 : 1, { duration: 400 }),
+    opacity: withTiming(isPaused && !isEnd ? 0.4 : 1, { duration: 400 }),
   }))
 
   const reTextStyle = StyleSheet.create({
@@ -168,24 +167,18 @@ export function Timer({ isLoaded, task }: TimerProps) {
     const isSessionEnd = sessionSeconds === -1
 
     if (isSessionEnd && isLongBreak) {
-      // setIsLongBreak(false)
-      // setSessionSeconds(totalSessionSeconds)
-      // setTotalSessionSeconds(totalSessionSeconds)
-      // setCompletedSessions(1)
       setShouldReset(true)
       setIsEnd(true)
 
       showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
       storage.updateTask({ ...task, isLongBreak: false })
-
-      hanldeSessionEnd()
       return
     }
 
     if (isSessionEnd && completedSessions === totalSessions) {
       setIsLongBreak(true)
-      setSessionSeconds(longBreakSeconds)
-      setTotalSessionSeconds(longBreakSeconds)
+      setSessionSeconds(5)
+      setTotalSessionSeconds(5)
 
       showToast(
         `Take a long break for ${convertSecondsToTime(longBreakSeconds)}`
@@ -283,7 +276,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
             color="$yellow11"
             textAlign="center"
             mt={12}
-            opacity={isPaused ? 0.4 : 1}
+            opacity={isPaused || isEnd ? 0.4 : 1}
             zIndex={50}
             animatedProps={opacityAnimatedProp}
           >
