@@ -167,11 +167,12 @@ export function Timer({ isLoaded, task }: TimerProps) {
     const isSessionEnd = sessionSeconds === -1
 
     if (isSessionEnd && isLongBreak) {
+      hanldeSessionEnd()
+      
       setShouldReset(true)
       setIsEnd(true)
 
       storage.updateTask({ ...task, isLongBreak: false })
-      hanldeSessionEnd()
       return
     }
 
