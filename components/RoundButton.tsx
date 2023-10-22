@@ -25,7 +25,7 @@ export function RoundButton({
           opacity: 0.8,
           backgroundColor: theme.blue4.val,
         }}
-        testID="roundButton"
+        accessible={true}
       />
     </Shadow>
   )
