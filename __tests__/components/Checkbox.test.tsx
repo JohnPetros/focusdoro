@@ -25,7 +25,7 @@ describe("Checkbox component", () => {
       { wrapper }
     )
 
-    expect(screen.getByText(label)).toBeOnTheScreen()
+    expect(screen.getByText(label)).toBeTruthy()
   })
 
   it("should call a function on check", () => {
