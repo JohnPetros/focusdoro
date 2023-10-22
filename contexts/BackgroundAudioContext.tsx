@@ -1,17 +1,17 @@
 import { createContext, ReactNode, useEffect, useState } from "react"
 
+import type { AudioTitle } from "../@types/audio"
 import { useAudio } from "../hooks/useAudio"
 import { useStorage } from "../services/storage"
-import { AudioTitle } from "../utils/audios"
 
 const PATH = "../assets/audios"
 
 type BackgroundAudioContextValue = {
-  storeAudio: (audio: string) => void
-  loadAudio: (audio: string) => Promise<boolean>
+  storeAudio: (audio: AudioTitle) => void
+  loadAudio: (audio: AudioTitle) => Promise<boolean>
   play: (isLooping?: boolean) => Promise<void>
   stop: () => Promise<void>
-  audio: string
+  audio: AudioTitle
   isLoaded: boolean
 }
 
@@ -27,7 +27,7 @@ export function BackgroundAudioProvider({
   children,
 }: BackgroundAudioProviderProps) {
   const { play, stop, loadAudioFile } = useAudio()
-  const [audio, setAudio] = useState("")
+  const [audio, setAudio] = useState<AudioTitle>("forest")
   const [isLoaded, setIsLoaded] = useState(false)
   const storage = useStorage()
 
@@ -47,7 +47,7 @@ export function BackgroundAudioProvider({
     }
   }
 
-  function storeAudio(audio: string) {
+  function storeAudio(audio: AudioTitle) {
     setAudio(audio)
     storage.setAudio(String(audio))
   }
