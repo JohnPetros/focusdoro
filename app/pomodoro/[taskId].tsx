@@ -190,7 +190,7 @@ export default function Pomodoro() {
           icon={BookOpen}
           onPress={null}
         />
-        <TaskControls taskId={taskId.toString()} />
+        {isPaused && <TaskControls taskId={taskId.toString()} />}
 
         {isEnd && (
           <YStack mt={12}>
