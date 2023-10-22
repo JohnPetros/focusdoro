@@ -1,18 +1,6 @@
-import {
-  CloudRain,
-  Coffee,
-  Icon,
-  Peace,
-  Tree,
-  Waves,
-} from "phosphor-react-native"
+import { CloudRain, Coffee, Peace, Tree, Waves } from "phosphor-react-native"
 
-export type AudioTitle = "forest" | "cafe" | "ocean" | "rain" | "peace"
-
-type Audio = {
-  title: AudioTitle
-  icon: Icon
-}
+import type { Audio } from "../@types/audio"
 
 export const AUDIOS: Audio[] = [
   {
