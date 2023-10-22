@@ -21,6 +21,7 @@ describe("TaskCard component", () => {
         icon={Play}
         completedSessions={taskMock.completedSessions}
         totalSessions={taskMock.totalSessions}
+        completedPomodoros={taskMock.completedPomodoros}
         isActive={true}
         onPress={onPressMock}
       />,
@@ -39,7 +40,9 @@ describe("TaskCard component", () => {
         icon={Play}
         completedSessions={taskMock.completedSessions}
         totalSessions={taskMock.totalSessions}
+        completedPomodoros={taskMock.completedPomodoros}
         isActive={true}
+        label={taskActionLabel}
         onPress={onPressMock}
       />,
       { wrapper }
@@ -52,26 +55,21 @@ describe("TaskCard component", () => {
     expect(onPressMock).toBeCalled()
   })
 
-  it("should call a function on press", () => {
-    const taskActionLabel = "Run task action"
-
-    const { getByLabelText } = render(
+  it("should show completed pomodoros", () => {
+    const { getByText } = render(
       <TaskCard
         title={taskMock.title}
         icon={Play}
         completedSessions={taskMock.completedSessions}
         totalSessions={taskMock.totalSessions}
+        completedPomodoros={2}
         isActive={true}
         onPress={onPressMock}
-        label={taskActionLabel}
+        label={"Mock label"}
       />,
       { wrapper }
     )
 
-    const taskButton = getByLabelText(taskActionLabel)
-
-    fireEvent.press(taskButton)
-
-    expect(onPressMock).toBeCalled()
+    expect(getByText(`+ 2`)).toBeTruthy()
   })
 })
