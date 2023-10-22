@@ -1,6 +1,6 @@
 import { create } from "zustand"
 
-type StoreState = {
+export type StoreState = {
   sessionSeconds: number
   breakSeconds: number
   longBreakSeconds: number
