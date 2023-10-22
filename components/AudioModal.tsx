@@ -4,6 +4,7 @@ import { Dialog } from "@tamagui/dialog"
 import { X } from "phosphor-react-native"
 import { useTheme, XStack } from "tamagui"
 
+import type { AudioTitle } from "../@types/audio"
 import { useBackgroundAudio } from "../hooks/useBackgroundAudio"
 import { AUDIOS } from "../utils/audios"
 
@@ -36,7 +37,7 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
     setIsModalOpen(false)
   }
 
-  async function handleAudioCheckboxChange(audio: string) {
+  async function handleAudioCheckboxChange(audio: AudioTitle) {
     setSelectedAudio(audio)
     storeAudio(audio)
     setIsAudioLoaded(false)
@@ -102,13 +103,14 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
           exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
           w={MODAL_WIDTH}
           bg="$blue2"
+          testID="audio-modal"
         >
           <XStack
             alignItems="center"
             justifyContent="space-between"
           >
             <Dialog.Title fontSize={18}>Play sound during session</Dialog.Title>
-            <Dialog.Close>
+            <Dialog.Close accessible={true}>
               <RoundButton
                 shadowColor={theme.blue8.val}
                 size="$2"
