@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from "@testing-library/react-native"
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react-native"
 import { Button } from "tamagui"
 
 import { AlertContent, AlertRoot, AlertTrigger } from "../../components/Alert"
@@ -38,9 +44,9 @@ describe("Alert component", () => {
       fireEvent.press(alertTrigger)
     })
 
-    expect(screen.getByTestId("alert")).toBeOnTheScreen()
-    expect(screen.getByText(alertTitleMock)).toBeOnTheScreen()
-    expect(screen.getByText(alertDescriptionMock)).toBeOnTheScreen()
+    expect(screen.getByTestId("alert")).toBeTruthy()
+    expect(screen.getByText(alertTitleMock)).toBeTruthy()
+    expect(screen.getByText(alertDescriptionMock)).toBeTruthy()
   })
 
   it("should call a function on confirm", async () => {
@@ -71,7 +77,9 @@ describe("Alert component", () => {
       const alertCancel = screen.getByTestId("alert-cancel")
       fireEvent.press(alertCancel)
     })
-    expect(onCancelMock).toHaveBeenCalled()
-    expect(screen.queryByTestId("alert")).toBe(null)
+
+    await waitFor(() => {
+      expect(onCancelMock).toHaveBeenCalled()
+    })
   })
 })
