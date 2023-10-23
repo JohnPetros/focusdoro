@@ -172,6 +172,7 @@ describe("Timer component", () => {
     })
   })
 
+  
   it("should set break to true when session is end", async () => {
     const breakSeconds = 60 * 5 // 5 minutes
 
