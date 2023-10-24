@@ -23,11 +23,11 @@ import { XStack } from "tamagui"
 import { Task } from "../@types/task"
 import { useAudio } from "../hooks/useAudio"
 import { useBackgroundAudio } from "../hooks/useBackgroundAudio"
+import { useDate } from "../hooks/useDate"
 import { useFeatures } from "../hooks/useFeatures"
 import { useTimerStore } from "../hooks/useTimerStore"
 import { useVibration } from "../hooks/useVibration"
 import { useStorage } from "../services/storage"
-import { convertSecondsToTime } from "../utils/convertSecondsToTime"
 
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 const AnimatedText = Animated.createAnimatedComponent(Text)
@@ -92,6 +92,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
   } = useFeatures(["automatic sessions"])
   const vibration = useVibration()
   const storage = useStorage()
+  const { convertSecondsToTime, getTodayWeekday } = useDate()
 
   const progress = useValue(0)
   const minutes = useSharedValue(isLoaded ? sessionSeconds / 60 : 0)
@@ -133,6 +134,15 @@ export function Timer({ isLoaded, task }: TimerProps) {
     if (isLoaded && !automaticSessionFeature?.isActive) {
       setIsPaused(true)
     }
+  }
+
+  function incrementWeekdayChart() {
+    const weekday = getTodayWeekday()
+    const currentWeekdayChart = storage.getWeekdayChartByWeekday(weekday)
+    const updatedValue = currentWeekdayChart.value + 1
+
+    storage.updateWeeklyChart({ ...currentWeekdayChart, value: updatedValue })
+    return
   }
 
   function showToast(message: string) {
@@ -181,6 +191,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
         `Take a long break for ${convertSecondsToTime(longBreakSeconds)}`
       )
       storage.updateTask({ ...task, isLongBreak: true })
+      incrementWeekdayChart()
       hanldeSessionEnd()
       return
     }
@@ -189,7 +200,6 @@ export function Timer({ isLoaded, task }: TimerProps) {
       setIsBreak(false)
       setSessionSeconds(totalSessionSeconds)
       setTotalSessionSeconds(totalSessionSeconds)
-      setCompletedSessions(completedSessions + 1)
 
       showToast("New session for " + convertSecondsToTime(totalSessionSeconds))
       storage.updateTask({ ...task, isBreak: false })
@@ -201,9 +211,11 @@ export function Timer({ isLoaded, task }: TimerProps) {
       setIsBreak(true)
       setSessionSeconds(breakSeconds)
       setTotalSessionSeconds(breakSeconds)
+      setCompletedSessions(completedSessions + 1)
 
       showToast(`Take a break for ${convertSecondsToTime(breakSeconds)}`)
       storage.updateTask({ ...task, isBreak: true })
+      incrementWeekdayChart()
       hanldeSessionEnd()
       return
     }
