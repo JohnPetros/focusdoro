@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
+import { useFocusEffect } from "expo-router/src/useFocusEffect"
 import { H2, Text, useTheme, View, XStack, YStack } from "tamagui"
 import { VictoryBar } from "victory-native"
 
@@ -57,13 +58,34 @@ export function WeeklyChart() {
       }
     })
     setData(data)
+    storage.setWeeklyChart(weeklyChart)
   }
 
-  useEffect(() => {
-    setWeeklyChart(weeklyChartMock)
+  function fetchWeeklyChart() {
+    const weeklyChart = storage.getWeeklyChart()
+    if (weeklyChart) {
+      setWeeklyChart(weeklyChart)
 
-    return
-  }, [])
+      const isTodaySunday = getTodayWeekday() === "Sun"
+      if (isTodaySunday && weeklyChart.shouldReset) {
+        setWeeklyChart(DEFAULT_WEEKLY_CHART)
+      }
+
+      if (!isTodaySunday && !weeklyChart.shouldReset) {
+        storage.toggleShouldReset()
+      }
+
+      return
+    }
+
+    setWeeklyChart(DEFAULT_WEEKLY_CHART)
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchWeeklyChart()
+    }, [])
+  )
 
   if (data.length)
     return (
