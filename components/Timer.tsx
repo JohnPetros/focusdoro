@@ -295,7 +295,7 @@ export function Timer({ isLoaded, task }: TimerProps) {
                   ? `${
                       isLongBreak ? "Long break" : "break"
                     } for ${convertSecondsToTime(breakSeconds)}`
-                  : `${completedSessions} of ${totalSessions} sessions`}
+                  : `${completedSessions + 1} of ${totalSessions} sessions`}
               </>
             )}
           </AnimatedText>
