@@ -3,10 +3,15 @@ import { useFocusEffect } from "expo-router/src/useFocusEffect"
 import { H2, Text, useTheme, View, XStack, YStack } from "tamagui"
 import { VictoryBar } from "victory-native"
 
-import { WeeklyChart as WeeklyChartData } from "../@types/weeklyChart"
+import {
+  Weekday,
+  WeekdayChart,
+  WeeklyChart as WeeklyChartData,
+} from "../@types/weeklyChart"
 import { useDate } from "../hooks/useDate"
 import { useStorage } from "../services/storage"
 import { DEFAULT_WEEKLY_CHART } from "../utils/default-weekly-chart"
+import { WEEKDAYS } from "../utils/weekdays"
 
 const weeklyChartMock: WeeklyChartData = {
   shouldReset: false,
@@ -50,8 +55,20 @@ export function WeeklyChart() {
   const theme = useTheme()
   const { getTodayWeekday, getMonthWeekDays } = useDate()
 
+  function getWeekdayIndex(weekday: Weekday) {
+    return WEEKDAYS.findIndex((day) => day === weekday)
+  }
+
+  function sortByWeekday(weekdayCharts: WeekdayChart[]) {
+    return weekdayCharts.sort(
+      (a, b) => getWeekdayIndex(a.weekday) - getWeekdayIndex(b.weekday)
+    )
+  }
+
   function setWeeklyChart(weeklyChart: WeeklyChartData) {
-    const data = weeklyChart.weekdays.map(({ weekday, value }) => {
+    const weekdaysCharts = sortByWeekday(weeklyChart.weekdays)
+
+    const data = weekdaysCharts.map(({ weekday, value }) => {
       return {
         x: weekday,
         y: value,
@@ -101,7 +118,7 @@ export function WeeklyChart() {
         <View
           w="100%"
           alignItems="center"
-          mt={-24}
+          mt={-12}
         >
           <VictoryBar
             height={200}
