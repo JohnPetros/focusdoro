@@ -43,7 +43,7 @@ export const weeklyChartStorage = (storage: MMKV): IWeeklyStorage => ({
 
     if (weeklyChart) {
       const currentWeekdayCharts = weeklyChart.weekdays.filter(
-        (chart: WeekdayChart) => chart.weekday === weekdayChart.weekday
+        (chart: WeekdayChart) => chart.weekday !== weekdayChart.weekday
       )
 
       const updatedWeekdayCharts = [...currentWeekdayCharts, weekdayChart]
