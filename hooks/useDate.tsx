@@ -1,6 +1,4 @@
-import { Weekday } from "../@types/weeklyChart"
-
-const WEEKDAYS: Weekday[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+import { WEEKDAYS } from "../utils/weekdays"
 
 export function useDate() {
   function getTodayDate() {
