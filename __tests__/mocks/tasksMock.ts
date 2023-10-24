@@ -13,6 +13,7 @@ export const tasksMock: Task[] = [
     isBreak: false,
     isLongBreak: false,
     isSelected: false,
+    created_at: new Date(),
   },
   {
     id: "2",
@@ -26,6 +27,7 @@ export const tasksMock: Task[] = [
     isBreak: false,
     isLongBreak: false,
     isSelected: true,
+    created_at: new Date(),
   },
   {
     id: "3",
@@ -39,5 +41,6 @@ export const tasksMock: Task[] = [
     isBreak: false,
     isLongBreak: false,
     isSelected: false,
+    created_at: new Date(),
   },
 ]
