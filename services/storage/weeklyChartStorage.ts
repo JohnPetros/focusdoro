@@ -23,10 +23,6 @@ export const weeklyChartStorage = (storage: MMKV): IWeeklyStorage => ({
       return weeklyChart.weekdays.find((chart) => chart.weekday === weekday)
   },
 
-  resetWeeklyChart() {
-    this.setWeeklyChart(DEFAULT_WEEKLY_CHART)
-  },
-
   toggleShouldReset() {
     const weeklyChart: WeeklyChart = this.getWeeklyChart()
 
