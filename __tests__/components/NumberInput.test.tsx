@@ -1,5 +1,5 @@
 import { PortalProvider } from "@gorhom/portal"
-import { fireEvent, render } from "@testing-library/react-native"
+import { act, fireEvent, render } from "@testing-library/react-native"
 import { TamaguiProvider } from "tamagui"
 
 import { NumberInput } from "../../components/NumberInput"
@@ -55,7 +55,7 @@ describe("NumberInput component", () => {
   })
 
   it("should close NumberPicker on confirm value", () => {
-    const { getByTestId, getByLabelText } = render(
+    const { getByTestId, queryByTestId, getByLabelText } = render(
       <NumberInput
         minValue={0}
         maxValue={60}
@@ -67,13 +67,17 @@ describe("NumberInput component", () => {
       { wrapper }
     )
 
-    const numberInputbutton = getByTestId("number-input-trigger")
-    const confirmButton = getByLabelText(/confirm value/i)
+    act(() => {
+      const numberInputbutton = getByTestId("number-input-trigger")
+      fireEvent.press(numberInputbutton)
+    })
 
-    fireEvent.press(numberInputbutton)
-    fireEvent.press(confirmButton)
+    act(() => {
+      const confirmButton = getByLabelText(/confirm value/i)
+      fireEvent.press(confirmButton)
+    })
 
-    expect(getByTestId("number-picker")).not.toBeTruthy()
+    expect(queryByTestId("number-picker")).not.toBeTruthy()
   })
 
   it("should call onChange on NumberPicker confirm value", () => {
@@ -91,11 +95,15 @@ describe("NumberInput component", () => {
       { wrapper }
     )
 
-    const numberInputbutton = getByTestId("number-input-trigger")
-    const confirmButton = getByLabelText(/confirm value/i)
+    act(() => {
+      const numberInputbutton = getByTestId("number-input-trigger")
+      fireEvent.press(numberInputbutton)
+    })
 
-    fireEvent.press(numberInputbutton)
-    fireEvent.press(confirmButton)
+    act(() => {
+      const confirmButton = getByLabelText(/confirm value/i)
+      fireEvent.press(confirmButton)
+    })
 
     expect(onChangeMock).toHaveBeenCalledWith(value)
   })

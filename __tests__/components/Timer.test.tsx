@@ -1,8 +1,5 @@
-import {
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react-native"
+import { useToastController } from "@tamagui/toast"
+import { render, screen, waitFor } from "@testing-library/react-native"
 
 import { Timer } from "../../components/Timer"
 import { BackgroundAudioContext } from "../../contexts/BackgroundAudioContext"
@@ -39,6 +36,7 @@ const setIsEndMock = jest.fn()
 
 const loadAudioFileMock = jest.fn()
 const vibrateMock = jest.fn()
+const showToastMock = jest.fn()
 
 const taskMock = tasksMock[0]
 
@@ -67,6 +65,14 @@ function renderComponent(isTimerLoaded = true) {
 
   debug()
 }
+
+// function mockUseToast() {
+//   const useToastMock = jest.mocked(useToastController)
+
+//   useToastMock.mockReturnValueOnce({
+//     show: showToastMock,
+//   } as any)
+// }
 
 function mockUseVibration() {
   const useVibrationMock = jest.mocked(useVibration)
@@ -146,6 +152,24 @@ describe("Timer component", () => {
     })
   })
 
+  it("should show break message on timer", async () => {
+    const isBreak = true
+    const breakSeconds = 60 * 5 // minutes
+
+    mockUseVibration()
+    mockUseAudio()
+    mockTimerStore({
+      isBreak,
+      breakSeconds,
+    })
+
+    renderComponent()
+
+    await waitFor(() => {
+      expect(screen.getByText(`break for 5 minutes`)).toBeTruthy()
+    })
+  })
+
   it("should show session seconds in time format", async () => {
     const sessionSeconds = 90 // 1:30
 
@@ -162,17 +186,17 @@ describe("Timer component", () => {
   })
 
   it("should decrement session seconds by 1", async () => {
-    mockTimerStore({ sessionSeconds: 100 })
+    mockTimerStore({ sessionSeconds: 100, isBreak: false, isLongBreak: false })
+    mockUseVibration()
     mockUseAudio()
 
     renderComponent()
 
     await waitFor(() => {
-      expect(setSessionSecondsMock).toHaveBeenCalledWith(90)
+      expect(setSessionSecondsMock).toHaveBeenCalledWith(99)
     })
   })
 
-  
   it("should set break to true when session is end", async () => {
     const breakSeconds = 60 * 5 // 5 minutes
 
@@ -186,6 +210,62 @@ describe("Timer component", () => {
       expect(setIsBreakMock).toHaveBeenCalledWith(true)
       expect(setSessionSecondsMock).toHaveBeenCalledWith(breakSeconds)
       expect(setSessionSecondsMock).toHaveBeenCalledWith(breakSeconds)
+    })
+  })
+
+  it("should set long break to true when session is end and completed sessions is equal to total sessions", async () => {
+    const longBreakSeconds = 60 * 15 // 15 minutes
+
+    mockUseVibration()
+    mockUseAudio()
+    mockTimerStore({
+      completedSessions: 3,
+      totalSessions: 3,
+      longBreakSeconds: longBreakSeconds,
+      sessionSeconds: -1,
+    })
+
+    renderComponent()
+
+    await waitFor(() => {
+      expect(setIsLongBreakMock).toHaveBeenCalledWith(true)
+      expect(setSessionSecondsMock).toHaveBeenCalledWith(longBreakSeconds)
+      expect(setSessionSecondsMock).toHaveBeenCalledWith(longBreakSeconds)
+    })
+  })
+
+  it("should reset timer when sessions is end and has a long break", async () => {
+    const longBreakSeconds = 60 * 15 // 15 minutes
+
+    mockUseVibration()
+    mockUseAudio()
+    mockTimerStore({
+      completedSessions: 3,
+      totalSessions: 3,
+      longBreakSeconds: longBreakSeconds,
+      isLongBreak: true,
+      sessionSeconds: -1,
+    })
+
+    renderComponent()
+
+    await waitFor(() => {
+      expect(setShouldResetMock).toHaveBeenCalledWith(true)
+      expect(setIsEndMock).toHaveBeenCalledWith(true)
+    })
+  })
+
+  it("should vibrate device on session end", async () => {
+    const breakSeconds = 60 * 5 // 5 minutes
+
+    mockUseVibration()
+    mockUseAudio()
+    mockTimerStore({ breakSeconds, sessionSeconds: -1 })
+
+    renderComponent()
+
+    await waitFor(() => {
+      expect(vibrateMock).toHaveBeenCalledWith("success")
     })
   })
 })

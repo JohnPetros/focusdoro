@@ -85,6 +85,14 @@ describe("TaskControls component", () => {
   it("should open audio modal", async () => {
     renderComponent()
 
+    const useTimerStoreMock = jest.mocked(useTimerStore)
+
+    useTimerStoreMock.mockReturnValueOnce({
+      action: {
+        setIsPaused: setIsPausedMock,
+      },
+    })
+
     await act(() => {
       fireEvent.press(screen.getByLabelText(/Open audio modal/i))
     })
@@ -104,7 +112,7 @@ describe("TaskControls component", () => {
     renderComponent()
 
     await act(() => {
-      fireEvent.press(screen.getByTestId(/Open audio modal/i))
+      fireEvent.press(screen.getByLabelText(/Open audio modal/i))
     })
 
     expect(stopMock).toHaveBeenCalled()

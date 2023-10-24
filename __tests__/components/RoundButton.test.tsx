@@ -13,17 +13,19 @@ const wrapper = ({ children }) => (
 describe("RoundButton component", () => {
   it("should call a function on press", () => {
     const onPressMock = jest.fn()
+    const label = "Mock label"
 
     render(
       <RoundButton
         shadowColor="$blue10"
         radius={12}
         onPress={onPressMock}
+        aria-label={label}
       />,
       { wrapper }
     )
 
-    const roundButton = screen.getByTestId("roundButton")
+    const roundButton = screen.getByLabelText(label)
 
     fireEvent.press(roundButton)
 

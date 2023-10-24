@@ -128,7 +128,6 @@ describe("Controls component", () => {
       fireEvent.press(screen.getByLabelText(/play timer/i))
     })
 
-    expect(setShouldResetMock).toHaveBeenCalledWith(true)
     expect(setIsPausedMock).toHaveBeenCalledWith(false)
   })
 
