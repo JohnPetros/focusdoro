@@ -21,7 +21,6 @@ export function AlertContent({
     <AlertDialog.Portal>
       <AlertDialog.Overlay
         key="overlay"
-        animation="quick"
         enterStyle={{ opacity: 0 }}
         exitStyle={{ opacity: 0 }}
         opacity={0.5}
