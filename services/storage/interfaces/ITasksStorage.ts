@@ -1,5 +1,6 @@
 import { Task } from "../../../@types/task"
 
+
 export interface ITasksStorage {
   getTask(taskId: string): Task
   getTasks(): Task[] | null
