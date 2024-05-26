@@ -12,7 +12,6 @@ export const featuresStorage = (storage: MMKV): IFeaturesStorage => ({
 
   getFeatures() {
     const features = storage.getString(FEATURES_KEY)
-    const t = features ? JSON.parse(features) : null
     if (features) return JSON.parse(features)
   },
 
