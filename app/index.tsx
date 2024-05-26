@@ -13,6 +13,7 @@ import { AlertContent, AlertRoot, AlertTrigger } from "../components/Alert"
 import { RoundButton } from "../components/RoundButton"
 import { TaskCard } from "../components/TaskCard"
 import { TextInput } from "../components/TextInput"
+import { WeeklyChart } from "../components/WeeklyChart"
 import { useVibration } from "../hooks/useVibration"
 import { useStorage } from "../services/storage"
 
@@ -24,8 +25,14 @@ export default function Home() {
   const swipeableRefs = useRef<Swipeable[]>([])
   const toast = useToastController()
   const storage = useStorage()
-  const { vibrate } = useVibration()
   const inputRef = useRef<TextInputRef>(null)
+  const { vibrate } = useVibration()
+
+  function sortTasksByCreationDate(tasks: Task[]) {
+    return tasks.sort((a, b) => {
+      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    })
+  }
 
   function handleError(message: string) {
     toast.show(message, {
@@ -71,7 +78,7 @@ export default function Home() {
     const newTask: Task = {
       id: taskId,
       title: newTaskTitle.trim(),
-      completedSessions: 1,
+      completedSessions: 0,
       totalSessions: 3,
       sessionMinutes: 20,
       breakMinutes: 5,
@@ -80,11 +87,12 @@ export default function Home() {
       isBreak: false,
       isLongBreak: false,
       isSelected: false,
+      created_at: new Date(),
     }
 
     try {
       storage.createTask(newTask)
-      setTasks([...tasks, newTask])
+      setTasks(sortTasksByCreationDate([...tasks, newTask]))
     } catch (error) {
       console.error(error)
       handleError("Failed to save task")
@@ -98,7 +106,7 @@ export default function Home() {
     try {
       const tasks = storage.getTasks()
 
-      if (tasks) setTasks(tasks)
+      if (tasks) setTasks(sortTasksByCreationDate(tasks))
     } catch (error) {
       console.error(error)
       handleError("Failed to fetch tasks")
@@ -144,6 +152,9 @@ export default function Home() {
           />
         </View>
       </XStack>
+
+      <WeeklyChart />
+
       <H2
         fontSize={16}
         color="$blue12"
