@@ -1,12 +1,8 @@
 <div align="center">
-  <img src="/assets/favicon.png" width="350" height="350"  />
 </div>
 
 <h1 align="center">
   Focusdoro ⏰
-=======
-  Focusdoro ⌚
->>>>>>> 06e5412b3a56279577cd762cc2f57132900127d3
 </h1>
 
 <div align="center">
@@ -26,9 +22,8 @@
 </div>
 <br>
 
-## 🖥️ About the project
+## 🖥️ Sobre o Projeto
 
-Focusdoro is an application aimed at applying the pomodoro technique, which is a time management method developed by Francisco Cirillo in the late 1980s, which consists of dividing your work into certain periods
 
 ### ⏹️ Demonstration
 
