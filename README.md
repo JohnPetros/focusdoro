@@ -1,8 +1,9 @@
 <div align="center">
+   <img src="assets/favicon.png" width="120" height="120" />
 </div>
 
 <h1 align="center">
-  Focusdoro ⏰
+  Focusdoro ⌚
 </h1>
 
 <div align="center">
@@ -22,7 +23,13 @@
 </div>
 <br>
 
-## 🖥️ Sobre o Projeto
+## 🖥️ About the project
+
+Focusdoro is an app builded to help people to manage and optimize their work or study time.  
+
+The app is built based on [Pomodoro](https://todoist.com/pt-BR/productivity-methods/pomodoro-technique) a technique in which you do focued work during certain periods of minutes organized between short breaks to promote sustained concetration and stave off mental fatigue
+
+The goal of developing this project enhace my skills on mobile development including animations, manipulation of audio files, global state management, notification control, storage handling and use of UI libraries. 
 
 
 ### ⏹️ Demonstration
