@@ -4,6 +4,9 @@
 
 <h1 align="center">
   Focusdoro ⏰
+=======
+  Focusdoro ⌚
+>>>>>>> 06e5412b3a56279577cd762cc2f57132900127d3
 </h1>
 
 <div align="center">

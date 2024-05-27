@@ -53,7 +53,6 @@ export function AudioModalContent({ setIsModalOpen }: AudioModalContentProps) {
       setIsAudioLoading(true)
 
       const isLoaded = await loadAudio(selectedAudio)
-      console.log(isLoaded)
 
       setIsAudioLoaded(isLoaded)
     } catch (error) {

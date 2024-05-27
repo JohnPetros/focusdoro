@@ -108,7 +108,7 @@ export default function Pomodoro() {
     setIsLongBreak(false)
     setSessionSeconds(sessionSeconds)
     setTotalSessionSeconds(sessionSeconds)
-    setCompletedSessions(1)
+    setCompletedSessions(0)
     setCompletedPomodoros(completedPomodoros)
 
     storage.updateTask({
@@ -131,6 +131,7 @@ export default function Pomodoro() {
 
     setIsTimerLoaded(false)
     setIsPaused(true)
+    fetchTask()
     stop()
   }
 
@@ -146,16 +147,15 @@ export default function Pomodoro() {
       if (audioFeature?.isActive && isLoaded) {
         play()
       }
-      setIsPaused(false)
     } else if (audioFeature?.isActive && isLoaded && isPaused) {
       stop()
     }
   }, [
     audioFeature,
     isTimerLoaded,
+    isPaused,
     isLoaded,
     isBreak,
-    isPaused,
     isLongBreak,
     isEnd,
   ])
@@ -190,7 +190,7 @@ export default function Pomodoro() {
           icon={BookOpen}
           onPress={null}
         />
-        {isPaused && <TaskControls taskId={taskId.toString()} />}
+        <TaskControls taskId={taskId.toString()} />
 
         {isEnd && (
           <YStack mt={12}>
