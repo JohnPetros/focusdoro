@@ -108,23 +108,21 @@ The goal of developing this project enhace my skills on mobile development inclu
 
 ---
 
-## ⚙️ Arquitetura
+## ⚙️ Archtecture
 
-## 🛠️ Tecnologias, ferramentas e serviços externos
+## 🛠️ Technologies, tools and third services
 
-Este projeto foi desenvolvido usando as seguintes tecnologias:
+This app was development using the following technologies:
 
-✔️ **[React Native](https://developer.mozilla.org/pt-BR/docs/Web/HTML)** para desevolvimento do applicativo mobile para ambas as plataformas [Android](https://www.android.com/intl/pt-BR_br/everyone/) e [IOS](https://www.apple.com/br/ios/ios-17/)
+✔️ **[React Native](https://developer.mozilla.org/pt-BR/docs/Web/HTML)** to develop mobile app for both platforms [Android](https://www.android.com/intl/pt-BR_br/everyone/) and [IOS](https://www.apple.com/br/ios/ios-17/)
 
 ✔️ **[Tamagui](https://tamagui.dev/)** for styling and building of accessible components
 
 ✔️ **[Expo](https://expo.dev/)** to facilate the development processing in React Native
 
-✔️ **[EAS](https://expo.dev/)** to automate the deploy processing of the app
+✔️ **[EAS](https://expo.dev/)** to generate builds of the app
 
-✔️ **[Zod](https://zod.dev/)** - to implement the data validation 
-
-✔️ **[Dayjs](https://day.js.org/)** - to manipulate any dates smootlhy
+✔️ **[Notifee](https://notifee.app/)** - to handle rich notifications
 
 ✔️ **[MMKV](https://github.com/mrousavy/react-native-mmkv)** - to manipulate the local storage of the user's device
 
@@ -138,7 +136,7 @@ Este projeto foi desenvolvido usando as seguintes tecnologias:
 
 ## 🚀 How to run the application?
 
-### 🔧 Pré-requisitos
+### 🔧 Prerequisites
 
 Before dowload the code you will need to have installed in your machine the following tools
 
@@ -213,7 +211,7 @@ $ git push origin my-feature
 
 ---
 
-## 📝 Licença
+## 📝 License
 
 This application is under MIT license. See the [license file](LICENSE) for more details.
 
