@@ -1,5 +1,5 @@
 <div align="center">
-   <img src="assets/favicon.png" width="120" height="120" />
+  <img src="assets/favicon.png" width="120" height="120" />
 </div>
 
 <h1 align="center">
@@ -36,9 +36,31 @@ The goal of developing this project enhace my skills on mobile development inclu
 
 <table align="center">
   <tr>
-    <td align="center" width="700">
-    <span>Página da Urna funcionando<br/></span>
-    <img alt="Home page" src=".github/focusdoro-funcionando.gif" alt="Demonstração da urna funcionando" />
+    <td align="center" width="700" height="350">
+      <span>Home screen <br/></span>
+      <img alt="Home page" src="documentation/images/home.jpeg" alt="Home screen" />
+    </td>
+   <td align="center" width="700" height="350">
+     <span>Timer screen <br/></span>
+      <img alt="Home page" src="documentation/images/timer.jpeg" alt="Home screen" />
+    </td>
+    <td align="center" width="700" height="350">
+     <span>Paused timer<br/></span>
+      <img alt="Home page" src="documentation/images/timer-paused.jpeg" alt="Home screen" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="700" height="350">
+      <span>Pomodoro end<br/></span>
+      <img alt="Home page" src="documentation/images/end.jpeg" alt="Home screen" />
+    </td>
+    <td align="center" width="700" height="350">
+      <span>Audio setting<br/></span>
+      <img alt="Home page" src="documentation/images/audio-modal.jpeg" alt="Home screen" />
+    </td>
+    <td align="center" width="700" height="350">
+      <span>Audio setting<br/></span>
+      <img alt="Home page" src="documentation/images/settings.jpeg" alt="Home screen" />
     </td>
   </tr>
 </table>
