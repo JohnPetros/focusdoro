@@ -174,7 +174,7 @@ $ npm start
 # Generaate the development expo build
 $ eas build --profile development --platform android
 ```
-> Download the build and run npm start scan the generated QR Code with your mobile device 😉.
+> Download the build and run npm start to scan the generated QR Code with your mobile device 😉.
 
 > See [the development build documentation](https://docs.expo.dev/develop/development-builds/create-a-build/) for more details.
 
@@ -206,6 +206,8 @@ $ git push origin my-feature
 ```
 
 > Your should replace 'my-feature' with the name of the feature you are making.
+
+> Check my [Emojis commit table](https://gist.github.com/JohnPetros/1f63f8cf07c719c5d2c5e011e2eac770) out to keep the consistence the commits that I am following.
 
 > You can also open an [issue](https://github.com/JohnPetros/focusdoro/issues) about some found problem, question or suggestion for the project. I will really happy to help, as well as improve this project.
 
