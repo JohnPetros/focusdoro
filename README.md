@@ -110,7 +110,7 @@ The goal of developing this project enhace my skills on mobile development inclu
 
 ## ⚙️ Archtecture
 
-## 🛠️ Technologies, tools and third services
+### 🛠️ Technologies, tools and third services
 
 This app was development using the following technologies:
 
@@ -118,17 +118,17 @@ This app was development using the following technologies:
 
 ✔️ **[Tamagui](https://tamagui.dev/)** for styling and building of accessible components
 
-✔️ **[Expo](https://expo.dev/)** to facilate the development processing in React Native
+✔️ **[Expo](https://expo.dev/)** for facilating the development processing in React Native
 
-✔️ **[EAS](https://expo.dev/)** to generate builds of the app
+✔️ **[EAS](https://expo.dev/)** for generating builds of the app
 
-✔️ **[Notifee](https://notifee.app/)** - to handle rich notifications
+✔️ **[Notifee](https://notifee.app/)** - for handling rich notifications
 
-✔️ **[MMKV](https://github.com/mrousavy/react-native-mmkv)** - to manipulate the local storage of the user's device
+✔️ **[MMKV](https://github.com/mrousavy/react-native-mmkv)** - for manipulating the local storage of the user's device
 
-✔️ **[Zustand](https://zustand-demo.pmnd.rs/)** - to manage the global state of the app
+✔️ **[Zustand](https://zustand-demo.pmnd.rs/)** - for managing the global state of the app
 
-✔️ **[Phosphor icons](https://www.typescriptlang.org/)** - to display accesible and beatiful icons
+✔️ **[Phosphor icons](https://www.typescriptlang.org/)** - for displaying accesible and beatiful icons
 
 > For more details about the project's dependencies like specific versions of each of them, see the [package.json file](https://github.com/JohnPetros/focusdoro/blob/main/package.json)
 
