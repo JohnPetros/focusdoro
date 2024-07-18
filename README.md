@@ -143,7 +143,7 @@ Before dowload the code you will need to have installed in your machine the foll
 - [Git](https://git-scm.com/) to clone this repo
 - [Yarn](https://yarnpkg.com/) or [NPM](https://www.npmjs.com/) to install and execute the dependencies (I'll use NPM)
 
-> Besides that, it is good having a code editor like [VSCode](https://code.visualstudio.com/)
+> Besides that, it is good having a code editor like [VSCode](https://code.visualstudio.com/).
 
 > Also is it pivotal setting the enviroment variables in a file called `.env` before executing the application. See the [.env.example file](https://github.com/JohnPetros/focusdoro/blob/main/.env.example) to know which variables should be set.
 
